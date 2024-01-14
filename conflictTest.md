@@ -1,3 +1,3 @@
 Some line is here.
 Another line appears.
-More changes now.
+This line is cooler. More changes now.
