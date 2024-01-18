@@ -11,7 +11,7 @@ My startup will be a simple chess game. This online web application will be acce
 - Games saved on the __database__. That means asynchronious play!
 
 ## Technologies used:
-- __Authentication__: Keep your games save behind your own password!
+- __Authentication__: Keep your games safe behind your own password!
 - __Database data__: Save your games for asynchronious play!
 - __Websocket Data__: Play in real time with friends anywhere!
 - Don't forget HTML, CSS, and Javascript to make a beautiful funcioning chess board!
