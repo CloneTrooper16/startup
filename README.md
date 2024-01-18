@@ -4,12 +4,12 @@ My startup will be a simple chess game. This online web application will be acce
 
 ## Key features include:
 - A chess game! what more could you want?
-- User authetication. No one else will be able to take your turn
-- Scores. A running total of your wins and almost wins!
-- Games saved on the database. That means asynchronious play!
+- __User authetication__. No one else will be able to take your turn
+- __Scores__. A running total of your wins and almost wins!
+- Games saved on the __database__. That means asynchronious play!
 
 ## Technologies used:
-- Authentication: Keep your games save behind your own password!
-- Database data: Save your games for asynchronious play!
-- Websocket Data: Play in real time with friends anywhere!
+- __Authentication__: Keep your games save behind your own password!
+- __Database data__: Save your games for asynchronious play!
+- __Websocket Data__: Play in real time with friends anywhere!
 - Don't forget HTML, CSS, and Javascript to make a beautiful funcioning chess board!
