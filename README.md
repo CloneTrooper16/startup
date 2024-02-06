@@ -16,3 +16,12 @@ My startup will be a simple chess game. This online web application will be acce
 - __Websocket Data__: Play in real time with friends anywhere!
 - Don't forget HTML, CSS, and Javascript to make a beautiful funcioning chess board!
 
+## HTML Deliverable:
+- __HTML pages__: I created 4 pages to login, play, check scores, and read about chess
+- __Links__: Every pages has links in the header for the other pages
+- __Text__: Text is included on the about page and on the other pages as required
+- __3rd Party Service calls__: I included a call to robohash which will generate unique profile icons for users
+- __images__: I included an image of chess on the about page
+- __login placeholder__: Included on the welcome page, the play page also displays the username
+- __Database placeholder__: Win/loss rate will be recorded and displayed on the scores page
+- __WebSocket placeholder__: The game of chess will be played in real time as moves are made, data will be passed.
