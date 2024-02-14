@@ -9,8 +9,71 @@
 
 body {
     display: flex;
+    flex-direction: column;
+    background-color: #607a79;
+    min-width: 375px;
+}
+
+header {
+    flex: 0 70px;
+    background-color: rgb(143, 198, 198);
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
 }
 
 h1 {
-    font-size: 24;
+    margin-left: 5px;
+}
+
+menu {
+    flex: 0;
+    display: flex;
+    /*  overwrite Bootstrap so the menu does not wrap */
+    flex-direction: row !important;
+    list-style: none;
+    align-items: center;
+}
+
+.navbar-nav {
+    display: flex;
+    align-items: center !important;
+    margin-top: 0
+}
+
+menu .nav-link {
+    padding: 0 0.3em;
+}
+
+main {
+    flex: 1 calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color:white;
+}
+
+footer {
+    flex: 0 30px;
+    display: flex;
+    background-color: #323a35;
+    justify-content: right;
+    align-items: center;
+}
+
+footer a {
+    padding-right: 5px;
+}
+
+@media (max-height: 400px) {
+    header {
+      display: none;
+    }
+    footer {
+      display: none;
+    }
+    main {
+      flex: 1 100vh;
+    }
 }

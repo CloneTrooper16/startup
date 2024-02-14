@@ -20,32 +20,30 @@
     <header>
       <h1>Chess</h1>
 
-      <nav>
-        <menu>
-          <li><a href="index.html">Home</a></li>
-          <li><a href="play.html">Play</a></li>
-          <li><a href="scores.html">Scores</a></li>
-          <li><a href="about.html">About</a></li>
-        </menu>
+      <nav class="navbar nav">
+        <div class="container-fluid">
+          <menu class="navbar-nav">
+            <a class="nav-link" href="index.html">Home</a>
+            <a class="nav-link" href="play.html">Play</a>
+            <a class="nav-link" href="scores.html">Scores</a>
+            <a class="nav-link" href="about.html">About</a>
+          </menu>
+        </div>
       </nav>
 
-      <hr />
     </header>
 
     <main>
       <h1>Welcome</h1>
       <p>Login to play chess!</p>
       <form method="get" action="play.html">
-        <label for="name">Name</label>
         <input type="text" id="name" placeholder="Your name here" />
         <button type="submit">Login</button>
       </form>
     </main>
 
     <footer>
-      <hr />
       <!-- <span class="text-reset">Author Name(s)</span> -->
-      <br />
       <a href="https://github.com/CloneTrooper16/startup">Spencer Winward's GitHub</a>
     </footer>
   </body>
