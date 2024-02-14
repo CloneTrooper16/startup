@@ -36,6 +36,12 @@
     border: 1px solid #000000;
     border-radius: 3px;
     background-color: #585858;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.chessPiece {
+    height: 7.5vh;
 }
 
 @media (orientation: portrait) {
@@ -58,5 +64,8 @@
         margin-left: .0001vh;
         /* flex-direction: column; */
         width: 60vw;
+    }
+    .chessPiece {
+        height: 7.5vw;
     }
 }
