@@ -66,6 +66,10 @@ footer a {
     padding-right: 5px;
 }
 
+.sourceLink {
+    color: #9c9c9c;
+}
+
 @media (max-height: 400px) {
     header {
       display: none;
