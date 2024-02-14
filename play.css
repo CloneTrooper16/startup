@@ -1,25 +1,30 @@
 .darkSquare {
-    /* flex: 0 50px; */
+    /* max-width: 21px; */
     width: 7.5vh;
     height: 7.5vh;
     background-color: #7497ad;
+    padding-left: 0;
 }
 
 .lightSquare {
-    /* flex: 0 50px; */
     width: 7.5vh;
     height: 7.5vh;
     background-color: #d9e4e7;
+    padding-left: 0;
 }
 
 .row {
     display: flex;
+    margin-left: .0001vh;
     /* flex-direction: column; */
+    width: 60vh;
 }
 
 .chessBoard {
     display: flex;
     flex-direction: column;
+    /* width:100%;
+    height: 60vh; */
 }
 
 .playArea {
@@ -28,4 +33,30 @@
 
 .userIcon {
     width: 7.5vh;
+    border: 1px solid #000000;
+    border-radius: 3px;
+    background-color: #585858;
+}
+
+@media (orientation: portrait) {
+    .darkSquare {
+        /* max-width: 21px; */
+        width: 7.5vw;
+        height: 7.5vw;
+    }
+    
+    .lightSquare {
+        width: 7.5vw;
+        height: 7.5vw;
+    }
+    .playArea {
+        width: 60vw;
+        justify-content: center;
+    }
+    .row {
+        display: flex;
+        margin-left: .0001vh;
+        /* flex-direction: column; */
+        width: 60vw;
+    }
 }

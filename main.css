@@ -46,7 +46,7 @@ menu .nav-link {
 }
 
 main {
-    flex: 1 calc(100vh - 100px);
+    flex: 1 calc(100vh - 105px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -55,7 +55,7 @@ main {
 }
 
 footer {
-    flex: 0 30px;
+    flex: 0 35px;
     display: flex;
     background-color: #323a35;
     justify-content: right;
