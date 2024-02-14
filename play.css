@@ -21,3 +21,11 @@
     display: flex;
     flex-direction: column;
 }
+
+.playArea {
+    width: 60vh;
+}
+
+.userIcon {
+    width: 7.5vh;
+}
