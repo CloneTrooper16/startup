@@ -1,0 +1,16 @@
+@font-face {
+    font-family: 'Rosarivo';
+    src: url('https://winward.click/assets/fonts/Rosarivo-Regular.ttf');
+}
+
+* {
+    font-family: Rosarivo;
+}
+
+body {
+    display: flex;
+}
+
+h1 {
+    font-size: 24;
+}
