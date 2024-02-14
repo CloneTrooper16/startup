@@ -1,0 +1,23 @@
+.darkSquare {
+    /* flex: 0 50px; */
+    width: 7.5vh;
+    height: 7.5vh;
+    background-color: #7497ad;
+}
+
+.lightSquare {
+    /* flex: 0 50px; */
+    width: 7.5vh;
+    height: 7.5vh;
+    background-color: #d9e4e7;
+}
+
+.row {
+    display: flex;
+    /* flex-direction: column; */
+}
+
+.chessBoard {
+    display: flex;
+    flex-direction: column;
+}
