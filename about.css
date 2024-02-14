@@ -1,0 +1,13 @@
+.pictureBox {
+    display: flex;
+    height: 40vh;
+    
+    margin-bottom: 1em;
+    padding: 0.5em;
+    background: rgb(45, 47, 63);
+    border-radius: 10px;
+}
+
+.pictureBox img {
+    max-width: 85vw;
+}
