@@ -25,3 +25,11 @@ My startup will be a simple chess game. This online web application will be acce
 - __login placeholder__: Included on the welcome page, the play page also displays the username
 - __Database placeholder__: Win/loss rate will be recorded and displayed on the scores page
 - __WebSocket placeholder__: The game of chess will be played in real time as moves are made, data will be passed.
+
+## CSS  Deliverable:
+- __Header, footer, and main content body__: Used flex to layout the sections
+- __Navigation Elements__: Links have changed format, now part of a bootstrap navbar
+- __Responsive to window resizing__: Looks great on pc, tablet, and phone
+- __Application elements__: Button uses bootstrap, good use of whitespace and contrast
+- __Application text content__: Uses one font across the board to be consistent
+- __Application images__: about image has a border and the chess pieces fit within their squares
