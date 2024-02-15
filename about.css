@@ -1,7 +1,6 @@
 .pictureBox {
     display: flex;
     height: 40vh;
-    
     margin-bottom: 1em;
     padding: 0.5em;
     background: rgb(45, 47, 63);
@@ -9,5 +8,5 @@
 }
 
 .pictureBox img {
-    max-width: 85vw;
+    width: 45vw;
 }
