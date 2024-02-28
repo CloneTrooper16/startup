@@ -21,20 +21,26 @@
 
   <body>
     <header>
-      <h1 class="htop">Chess</h1>
+      <div class="leftHeader">
+        <h1 class="htop">Chess</h1>
+        <nav class="navbar nav">
+          <div class="container-fluid">
+            <menu class="navbar-nav">
+              <a class="nav-link" href="home.html">Home</a>
+              <a class="nav-link" href="play.html">Play</a>
+              <a class="nav-link" href="scores.html">Scores</a>
+              <a class="nav-link" href="about.html">About</a>
+            </menu>
+          </div>
+        </nav>
+      </div>
+      <div class="profile">
+        <a class="userName" href="index.html"></a>
+        <a href="index.html">
+          <img class="profileIcon" src="https://robohash.org/MysteriousPlayer.png" />
+        </a>
+      </div>
 
-      <nav class="navbar nav">
-        <div class="container-fluid">
-          <menu class="navbar-nav">
-            <a class="nav-link" href="index.html">Home</a>
-            <a class="nav-link" href="play.html">Play</a>
-            <a class="nav-link" href="scores.html">Scores</a>
-            <a class="nav-link" href="about.html">About</a>
-          </menu>
-        </div>
-      </nav>
-
-      <hr />
     </header>
 
     <main>
@@ -48,5 +54,7 @@
       <!-- <span class="text-reset">Author Name(s)</span> -->
       <a class="sourceLink" href="https://github.com/CloneTrooper16/startup">Spencer Winward's GitHub</a>
     </footer>
+
+    <script src="main.js"></script>
   </body>
 </html>
