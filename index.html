@@ -7,6 +7,7 @@
     <title>Startup HTML</title>
     <link rel="icon" href="assets/ChessPieceIcon.png" />
 
+    <script src="login.js"></script>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
       rel="stylesheet"
@@ -38,7 +39,8 @@
       <p>Login to play chess!</p>
       <form method="get" action="play.html">
         <input type="text" id="name" placeholder="Your name here" />
-        <button type="submit" class="btn btn-primary">Login</button>
+        <input type="password" id="password" placeholder="Password" />
+        <button type="submit" class="btn btn-primary" onclick="login()">Login</button>
       </form>
     </main>
 
@@ -48,7 +50,3 @@
     </footer>
   </body>
 </html>
-
-<script>
-  
-</script>

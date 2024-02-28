@@ -54,6 +54,21 @@ main {
     color:white;
 }
 
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+input {
+    display: flex;
+    margin-bottom: 3px;
+}
+
+/* .btn {
+    width: 50%;
+} */
+
 footer {
     flex: 0 35px;
     display: flex;
