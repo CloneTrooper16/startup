@@ -53,7 +53,7 @@
       <div class="newGameArea">
         <div class="gameOption">
           <h2 class="optionText">Play Bot</h1>
-          <div class="smallPlayArea">
+          <div class="smallPlayArea" onclick="beginGame('bot')">
             <div class="chessBoard">
                 <div class="smallRow">
                     <div id="a8" class="smallLightSquare">
@@ -204,7 +204,7 @@
         </div>
         <div class="gameOption">
           <h2 class="optionText">Play Player</h1>
-          <div class="smallPlayArea">
+          <div class="smallPlayArea" onclick="beginGame('player')">
             <div class="chessBoard">
             <div class="smallRow">
                 <div id="a8" class="smallLightSquare">
@@ -356,6 +356,9 @@
       </div>
       <div class="spacing"></div>
       <h1 class="optionHeader">
+        Open Challenges
+      </h1>
+      <h1 class="optionHeader">
         Saved Games
       </h1>
 
@@ -367,5 +370,6 @@
     </footer>
 
     <script src="main.js"></script>
+    <script src="play.js"></script>
   </body>
 </html>

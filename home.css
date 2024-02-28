@@ -25,6 +25,10 @@
     width: 25vh;
 }
 
+.smallPlayArea:hover {
+    cursor: pointer;
+}
+
 .smallDarkSquare {
     /* max-width: 21px; */
     width: 3.125vh;
