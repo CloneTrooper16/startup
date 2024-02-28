@@ -1,3 +1,18 @@
+.newGameArea {
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+}
+
+.gameOption {
+    display: flex column;
+}
+
+h1 {
+    width: auto;
+    text-align: center;
+}
+
 .smallPlayArea {
     width: 25vh;
 }
