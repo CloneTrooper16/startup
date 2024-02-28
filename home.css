@@ -1,3 +1,11 @@
+.optionHeader {
+    width: 90%;
+    border-bottom: rgb(255, 255, 255) solid 1px;
+}
+
+.spacing {
+    height: 5vh;
+}
 .newGameArea {
     display: flex;
     width: 100%;
@@ -8,7 +16,7 @@
     display: flex column;
 }
 
-h1 {
+.optionText {
     width: auto;
     text-align: center;
 }
@@ -26,8 +34,8 @@ h1 {
 }
 
 .smallLightSquare {
-    min-width: 12.5%;
-    min-height: 12.5%;
+    width: 3.125vh;
+    height: 3.125vh;
     background-color: #d9e4e7;
     padding-left: 0;
 }
