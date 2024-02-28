@@ -1,0 +1,29 @@
+.smallPlayArea {
+    width: 25vh;
+}
+
+.smallDarkSquare {
+    /* max-width: 21px; */
+    width: 3.125vh;
+    height: 3.125vh;
+    background-color: #7497ad;
+    padding-left: 0;
+}
+
+.smallLightSquare {
+    min-width: 12.5%;
+    min-height: 12.5%;
+    background-color: #d9e4e7;
+    padding-left: 0;
+}
+
+.smallChessPiece {
+    height: 3vh;
+}
+
+.smallRow {
+    display: flex;
+    margin-left: .0001vh;
+    /* flex-direction: column; */
+    width: 25vh;
+}
