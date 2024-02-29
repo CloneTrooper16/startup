@@ -13,6 +13,10 @@
     padding-left: 0;
 }
 
+.selected {
+    background-color: rgb(255, 0, 0);
+}
+
 .row {
     display: flex;
     margin-left: .0001vh;
