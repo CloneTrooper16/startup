@@ -2,6 +2,14 @@ function beginGame() {
     console.log("It's working! It's working!");
 }
 
+function getPlayerName() {
+    return localStorage.getItem('userName') ?? 'Mystery player';
+}
+
+function getPlayerIcon() {
+    return localStorage.getItem('userName') ?? 'Mystery player';
+}
+
 class Piece {
     position;
     canMove;
@@ -184,7 +192,7 @@ class Game {
     h2pawn;
     selected;
     pieces;
-
+    gameOver;
     constructor() {
         this.a2pawn = new Pawn([1,0],'white','pa2');
         this.b2pawn = new Pawn([1,1],'white','pb2');
@@ -216,6 +224,7 @@ class Game {
                       [this.a7pawn,this.b7pawn,this.c7pawn,this.d7pawn,this.e7pawn,this.f7pawn,this.g7pawn,this.h7pawn],
                       ["", "", "", "", "", "", "", ""]];
         this.selected = null;
+        this.gameOver = false;
         this.resetBoard();
     }
 
@@ -244,9 +253,11 @@ class Game {
     checkVictory(pos) {
         if (pos == 7) {
             document.getElementById("victor").textContent = "White Wins!";
+            this.gameOver = true;
         }
         else if (pos == 0) {
             document.getElementById("victor").textContent = "Black Wins!";
+            this.gameOver = true;
         }
     }
 
@@ -466,23 +477,29 @@ class Game {
         if (document.querySelector('.selected') != null) {
             document.querySelector('.selected').classList.remove('selected');
         }
-        // document.getElementById(square.id).firstElementChild.src = "https://images.chesscomfiles.com/chess-themes/pieces/neo/150/bp.png";
-        document.getElementById(square.id).classList.add('selected');
-        let piece = document.getElementById(square.id).firstElementChild.src;
+        if (!this.gameOver) {
+            // document.getElementById(square.id).firstElementChild.src = "https://images.chesscomfiles.com/chess-themes/pieces/neo/150/bp.png";
+            document.getElementById(square.id).classList.add('selected');
+            let piece = document.getElementById(square.id).firstElementChild.src;
 
-        if (piece.includes(".png")) {
-            // let pieceType = piece.substring(61,63);
-            // switch(pieceType) {
-            //     default:
-            //         console.log(pieceType);
-            // }
+            if (piece.includes(".png")) {
+                // let pieceType = piece.substring(61,63);
+                // switch(pieceType) {
+                //     default:
+                //         console.log(pieceType);
+                // }
 
-            let pieceID = this.getPieceID(document.getElementById(square.id).classList);
-            this.selectPiece(pieceID);
+                let pieceID = this.getPieceID(document.getElementById(square.id).classList);
+                this.selectPiece(pieceID);
+            }
         }
-
     }
-
 }
 
 const game = new Game();
+
+const playerNameEl = document.querySelector('.playerName');
+const playerIconEl = document.querySelector('.playerIcon')
+
+playerNameEl.textContent = this.getPlayerName();
+playerIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";

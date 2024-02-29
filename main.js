@@ -6,7 +6,7 @@ function getPlayerIcon() {
     return localStorage.getItem('userName') ?? 'Mystery player';
 }
 
-const playerNameEl = document.querySelector('.userName');
-const playerIconEl = document.querySelector('.profileIcon')
-playerNameEl.textContent = this.getPlayerName();
-playerIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";
+const userNameEl = document.querySelector('.userName');
+const userIconEl = document.querySelector('.profileIcon')
+userNameEl.textContent = this.getPlayerName();
+userIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";

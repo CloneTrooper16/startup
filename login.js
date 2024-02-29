@@ -6,7 +6,7 @@ function login() {
     }
     if (checkPassword(nameEl.value, passwordEl.value)) {
         localStorage.setItem("userName", nameEl.value);
-        window.location.href = "play.html";
+        window.location.href = "home.html";
     }
     else {
         //give error message
