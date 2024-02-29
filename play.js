@@ -15,8 +15,6 @@ class Piece {
     }
 
     movePiece(square) {
-        // console.log(square.id);
-        // square.firstElementChild;
         this.hasMoved = true;
         let pos = game.getPosString(this.position[0],this.position[1]);
         let oldSquare = document.getElementById(pos);
@@ -26,16 +24,13 @@ class Piece {
         this.addNewPiece(square);
         
         let pieceID = "id" + this.id;
-        console.log("pID", pieceID);
-        console.log("sID", square.id);
         this.position = this.getNewPosition(square.id);
-
-        // console.log(oldSquare.classList);
-        console.log(this.id);
+        if(!game.isEmptySquare(this.position[0],this.position[1])) {
+            game.removeCapture(square);
+        }
 
         oldSquare.classList.remove(pieceID);
         square.classList.add(pieceID);
-        console.log(square.classList); //TODO: remove old ID
         this.removeMoves();
         game.deselect();
         game.updateBoard(this.position, oldPos, pieceID);
@@ -97,7 +92,6 @@ class Piece {
                 break;
         }
         rank--;
-        console.log(rank, file);
         return [rank, file];
     }
 
@@ -126,8 +120,22 @@ class Pawn extends Piece {
         if (moveTwo) {
             moves.push(game.getPosString(this.color == 'white' ? this.position[0]+2 : this.position[0]-2, this.position[1]));
         }
-        // console.log(moves);
+        moves.push(...this.checkCaptures());
         return moves;
+    }
+    checkCaptures() {
+        let captures = [];
+        let captureOne = !game.isEmptySquare(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]-1)
+                          && game.checkPieceColor(this.color, [this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]-1]);
+        let captureTwo = !game.isEmptySquare(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]+1)
+                          && game.checkPieceColor(this.color, [this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]+1]);
+        if (captureOne) {
+            captures.push(game.getPosString(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]-1));
+        }
+        if (captureTwo) {
+            captures.push(game.getPosString(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]+1));
+        }
+        return captures;
     }
 }
 
@@ -195,14 +203,14 @@ class Game {
         this.pieces = [this.a2pawn,this.b2pawn,this.c2pawn,this.d2pawn,this.e2pawn,this.f2pawn,this.g2pawn,this.h2pawn,
                        this.a7pawn,this.b7pawn,this.c7pawn,this.d7pawn,this.e7pawn,this.f7pawn,this.g7pawn,this.h7pawn];
 
-        this.board = [[],
+        this.board = [["", "", "", "", "", "", "", ""],
                       [this.a2pawn,this.b2pawn,this.c2pawn,this.d2pawn,this.e2pawn,this.f2pawn,this.g2pawn,this.h2pawn],
                       ["", "", "", "", "", "", "", ""],
                       ["", "", "", "", "", "", "", ""],
                       ["", "", "", "", "", "", "", ""],
                       ["", "", "", "", "", "", "", ""],
                       [this.a7pawn,this.b7pawn,this.c7pawn,this.d7pawn,this.e7pawn,this.f7pawn,this.g7pawn,this.h7pawn],
-                      []];
+                      ["", "", "", "", "", "", "", ""]];
         this.selected = null;
         this.resetBoard();
     }
@@ -227,6 +235,22 @@ class Game {
         let movedPiece = this.getPiece(pieceID);
         this.board[newPos[0]][newPos[1]] = movedPiece;
         this.board[oldPos[0]][oldPos[1]] = "";
+    }
+    
+    checkPieceColor(myColor, otherSquare) {
+        let otherColor = this.getColor(otherSquare);
+        if (myColor == otherColor) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    removeCapture(square) {
+        let capPiece = this.getPieceOnSquare(square);
+        let capID = "id" + capPiece.id;
+        square.classList.remove(capID);
     }
 
     getPosString(rank, file) {
@@ -354,21 +378,63 @@ class Game {
         return this.pieces.find( p => p.id == id);
     }
 
+    getPieceOnSquare(square) {
+        let pos = this.getPosfromString(square.id);
+        return this.board[pos[0]][pos[1]];
+    }
+
+    getPosfromString(pos) {
+        let file = pos[0];
+        let rank = pos[1];
+        switch(file) {
+            case 'a':
+                file = 0;
+                break;
+            case 'b':
+                file = 1;
+                break;
+            case 'c':
+                file = 2;
+                break;
+            case 'd':
+                file = 3;
+                break;
+            case 'e':
+                file = 4;
+                break;
+            case 'f':
+                file = 5;
+                break;
+            case 'g':
+                file = 6;
+                break;
+            case 'h':
+                file = 7;
+                break;
+        }
+        rank--;
+        return [rank, file];
+    }
+
+    getColor(piecePos) {
+        console.log(piecePos);
+        return this.pieces.find( p => p.position[0] == piecePos[0] && p.position[1] == piecePos[1]).color;
+    }
+
     isEmptySquare(rank, file) {
-        console.log(rank, file);
         if (this.board[rank][file] != "") {
+            console.log("There be a piece", rank, file);
             return false;
         }
+        console.log("empty!");
         return true;
     }
     
     selectPiece(pieceID) {
-        // console.log(pieceID);
         // let type = pieceID.substring(2,3);
         // let pos = pieceID.substring(3);
         // type = this.unGetPieceType(type);
         this.selected = this.getPiece(pieceID);
-        // console.log(typeof this.selected.showMoves === 'function');
         this.selected.showMoves();
     }
 
@@ -393,7 +459,7 @@ class Game {
         // document.getElementById(square.id).firstElementChild.src = "https://images.chesscomfiles.com/chess-themes/pieces/neo/150/bp.png";
         document.getElementById(square.id).classList.add('selected');
         let piece = document.getElementById(square.id).firstElementChild.src;
-        // console.log(piece);
+
         if (piece.includes(".png")) {
             // let pieceType = piece.substring(61,63);
             // switch(pieceType) {
