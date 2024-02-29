@@ -17,6 +17,10 @@
     background-color: rgb(255, 0, 0);
 }
 
+.moveOption {
+    background-color: rgb(0, 255, 0);
+}
+
 .row {
     display: flex;
     margin-left: .0001vh;
