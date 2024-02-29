@@ -110,17 +110,20 @@ class Pawn extends Piece {
     checkMoves() {
         let moveTwo = false;
         let moves = [];
-        let moveOne = game.isEmptySquare(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]);
-        if (!this.hasMoved && moveOne) {
-            moveTwo = game.isEmptySquare(this.color == 'white' ? this.position[0]+2 : this.position[0]-2, this.position[1]);
+        if (this.color == 'white' ? this.position[0]+1 < 8 : this.position[0]-1 > -1) {
+            let moveOne = game.isEmptySquare(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]);
+            if (!this.hasMoved && moveOne) {
+                moveTwo = game.isEmptySquare(this.color == 'white' ? this.position[0]+2 : this.position[0]-2, this.position[1]);
+            }
+            if (moveOne) {
+                moves.push(game.getPosString(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]));
+            }
+            if (moveTwo) {
+                moves.push(game.getPosString(this.color == 'white' ? this.position[0]+2 : this.position[0]-2, this.position[1]));
+            }
+            moves.push(...this.checkCaptures());
         }
-        if (moveOne) {
-            moves.push(game.getPosString(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]));
-        }
-        if (moveTwo) {
-            moves.push(game.getPosString(this.color == 'white' ? this.position[0]+2 : this.position[0]-2, this.position[1]));
-        }
-        moves.push(...this.checkCaptures());
+
         return moves;
     }
     checkCaptures() {
@@ -417,16 +420,13 @@ class Game {
     }
 
     getColor(piecePos) {
-        console.log(piecePos);
         return this.pieces.find( p => p.position[0] == piecePos[0] && p.position[1] == piecePos[1]).color;
     }
 
     isEmptySquare(rank, file) {
         if (this.board[rank][file] != "") {
-            console.log("There be a piece", rank, file);
             return false;
         }
-        console.log("empty!");
         return true;
     }
     
