@@ -53,6 +53,11 @@
     height: 7.5vh;
 }
 
+#victor {
+    position: absolute;
+    bottom: 40px;
+}
+
 #player-messages {
     position: absolute;
     left: 5px;

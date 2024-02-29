@@ -26,10 +26,16 @@ My startup will be a simple chess game. This online web application will be acce
 - __Database placeholder__: Win/loss rate will be recorded and displayed on the scores page
 - __WebSocket placeholder__: The game of chess will be played in real time as moves are made, data will be passed.
 
-## CSS  Deliverable:
+## CSS Deliverable:
 - __Header, footer, and main content body__: Used flex to layout the sections
 - __Navigation Elements__: Links have changed format, now part of a bootstrap navbar
 - __Responsive to window resizing__: Looks great on pc, tablet, and phone
 - __Application elements__: Button uses bootstrap, good use of whitespace and contrast
 - __Application text content__: Uses one font across the board to be consistent
 - __Application images__: about image has a border and the chess pieces fit within their squares
+
+## JavaScript Deliverable:
+- __Login__: When you enter a username and press login, it brings you to the home page and displays your username and icon in the top right.
+- __database__: The scores page currently displays dummy data for your record, but will be replaced with actual win/loss count and a leaderboard.
+- __WebSocket__: I used the setInterval() function to generate messages that will be replaced with message of actual games starting and finishing.
+- __Application logic__: ChessPawns is a fully functioning pawn game that displays a win message when someone moves a pawn to the other side. 
