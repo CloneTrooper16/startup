@@ -34,6 +34,7 @@ class Piece {
         this.removeMoves();
         game.deselect();
         game.updateBoard(this.position, oldPos, pieceID);
+        game.checkVictory(this.position[0]);
     }
 
     addNewPiece(square) {
@@ -240,6 +241,15 @@ class Game {
         this.board[oldPos[0]][oldPos[1]] = "";
     }
     
+    checkVictory(pos) {
+        if (pos == 7) {
+            document.getElementById("victor").textContent = "White Wins!";
+        }
+        else if (pos == 0) {
+            document.getElementById("victor").textContent = "Black Wins!";
+        }
+    }
+
     checkPieceColor(myColor, otherSquare) {
         let otherColor = this.getColor(otherSquare);
         if (myColor == otherColor) {
