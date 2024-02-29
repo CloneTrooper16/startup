@@ -503,3 +503,12 @@ const playerIconEl = document.querySelector('.playerIcon')
 
 playerNameEl.textContent = this.getPlayerName();
 playerIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";
+
+//placeholder for webSocket
+setInterval(() => {
+    // const score = Math.floor(Math.random() * 3000);
+    const chatText = document.querySelector('#player-messages');
+    chatText.innerHTML =
+      `<div class="event"><span class="player-event">somePlayer</span> started a new game</div>` +
+      chatText.innerHTML;
+  }, 5000);

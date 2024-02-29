@@ -37,6 +37,7 @@
 
 .playArea {
     width: 60vh;
+    position: absolute;
 }
 
 .userIcon {
@@ -50,6 +51,14 @@
 
 .chessPiece {
     height: 7.5vh;
+}
+
+#player-messages {
+    position: absolute;
+    left: 5px;
+    top: 80px;
+    padding-top: 0.25em;
+    opacity: 0.5;
 }
 
 @media (orientation: portrait) {
