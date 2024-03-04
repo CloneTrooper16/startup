@@ -28,8 +28,6 @@ class Piece {
         let oldSquare = document.getElementById(pos);
         let oldPos = this.position;
         oldSquare.firstElementChild.src = "";
-
-        this.addNewPiece(square);
         
         let pieceID = "id" + this.id;
         this.position = this.getNewPosition(square.id);
@@ -37,8 +35,13 @@ class Piece {
             game.removeCapture(square);
         }
 
+        this.addNewPiece(square);
+
         oldSquare.classList.remove(pieceID);
         square.classList.add(pieceID);
+        let notation = this.getMoveNotation(square.id);
+        // console.log(notation);
+        // game.moveList.push({notation: })
         this.removeMoves();
         game.deselect();
         game.updateBoard(this.position, oldPos, pieceID);
@@ -54,6 +57,7 @@ class Piece {
 
     showMoves() {
         let moves = this.checkMoves();
+        let captures = this.checkCaptures();
         if (moves.length > 0) {
             moves.forEach( m => {
                 let mySquare = document.getElementById(m);
@@ -61,13 +65,25 @@ class Piece {
                 mySquare.classList.add('moveOption');
             });
         }
+        if (captures.length > 0) {
+            captures.forEach( m => {
+                let mySquare = document.getElementById(m);
+                mySquare.onclick = this.movePiece.bind(this, mySquare);
+                mySquare.classList.add('captureOption');
+            });
+        }
     }
 
     removeMoves() {
         let allMoves = document.querySelectorAll(".moveOption");
+        let allCaptures = document.querySelectorAll(".captureOption");
         allMoves.forEach(move => {
             move.classList.remove('moveOption');
             move.onclick = () => game.selectSquare(move);
+        });
+        allCaptures.forEach(cap => {
+            cap.classList.remove('captureOption');
+            cap.onclick = () => game.selectSquare(cap);
         });
     }
 
@@ -104,6 +120,14 @@ class Piece {
         return [rank, file];
     }
 
+    getMoveNotation(square) {
+        //TODO:: return the notation of the move
+        switch(this.type) {
+            case 'pawn':
+                return square;
+        }
+    }
+
     // checkMoves() {
     //     return true;
     // }
@@ -130,7 +154,7 @@ class Pawn extends Piece {
             if (moveTwo) {
                 moves.push(game.getPosString(this.color == 'white' ? this.position[0]+2 : this.position[0]-2, this.position[1]));
             }
-            moves.push(...this.checkCaptures());
+            // moves.push(...this.checkCaptures());
         }
 
         return moves;
@@ -139,12 +163,13 @@ class Pawn extends Piece {
         let captures = [];
         let captureOne = false;
         let captureTwo = false;
-        if (this.position[1] > 0) {
+        // console.log(game.checkPieceColor(this.color, [this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]-1]));
+            if (this.position[1] > 0) {
             captureOne = !game.isEmptySquare(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]-1)
                          && game.checkPieceColor(this.color, [this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]-1]);
         }
         if (this.position[1] < 7) {
-        captureTwo = !game.isEmptySquare(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]+1)
+            captureTwo = !game.isEmptySquare(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]+1)
                           && game.checkPieceColor(this.color, [this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]+1]);
         }
         if (captureOne) {
@@ -199,6 +224,7 @@ class Game {
     selected;
     pieces;
     gameOver;
+    moveList;
     constructor() {
         this.a2pawn = new Pawn([1,0],'white','pa2');
         this.b2pawn = new Pawn([1,1],'white','pb2');
@@ -231,6 +257,7 @@ class Game {
                       ["", "", "", "", "", "", "", ""]];
         this.selected = null;
         this.gameOver = false;
+        this.moveList = [];
         this.resetBoard();
     }
 
@@ -248,6 +275,7 @@ class Game {
                 }
             });
         });
+        this.moveList = [];
     }
 
     updateBoard(newPos, oldPos, pieceID) {
@@ -281,6 +309,8 @@ class Game {
         let capPiece = this.getPieceOnSquare(square);
         let capID = "id" + capPiece.id;
         square.classList.remove(capID);
+        let pieceToRemove = this.pieces.findIndex(p => p.id == capPiece.id);
+        this.pieces.splice(pieceToRemove,1);
     }
 
     getPosString(rank, file) {
@@ -511,10 +541,10 @@ playerNameEl.textContent = this.getPlayerName();
 playerIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";
 
 //placeholder for webSocket
-setInterval(() => {
-    // const score = Math.floor(Math.random() * 3000);
-    const chatText = document.querySelector('#player-messages');
-    chatText.innerHTML =
-      `<div class="event"><span class="player-event">somePlayer</span> started a new game</div>` +
-      chatText.innerHTML;
-  }, 5000);
+// setInterval(() => {
+//     // const score = Math.floor(Math.random() * 3000);
+//     const chatText = document.querySelector('#player-messages');
+//     chatText.innerHTML =
+//       `<div class="event"><span class="player-event">somePlayer</span> started a new game</div>` +
+//       chatText.innerHTML;
+//   }, 5000);
