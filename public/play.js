@@ -46,7 +46,7 @@ class Piece {
         this.removeMoves();
         game.deselect();
         game.updateBoard(this.position, oldPos, pieceID);
-        game.checkVictory(this.position[0]);
+        game.checkVictory(this.position[0], this.type);
         game.whiteTurn = !game.whiteTurn;
     }
 
@@ -365,14 +365,16 @@ class Game {
         this.board[oldPos[0]][oldPos[1]] = "";
     }
     
-    checkVictory(pos) {
-        if (pos == 7) {
-            document.getElementById("victor").textContent = "White Wins!";
-            this.gameOver = true;
-        }
-        else if (pos == 0) {
-            document.getElementById("victor").textContent = "Black Wins!";
-            this.gameOver = true;
+    checkVictory(pos, piece) {
+        if (piece == "pawn") {
+            if (pos == 7) {
+                document.getElementById("victor").textContent = "White Wins!";
+                this.gameOver = true;
+            }
+            else if (pos == 0) {
+                document.getElementById("victor").textContent = "Black Wins!";
+                this.gameOver = true;
+            }
         }
     }
 
