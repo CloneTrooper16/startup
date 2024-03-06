@@ -11,6 +11,7 @@ function getPlayerIcon() {
 }
 
 class Piece {
+    hasMoved;
     position;
     canMove;
     color;
@@ -40,12 +41,13 @@ class Piece {
         oldSquare.classList.remove(pieceID);
         square.classList.add(pieceID);
         let notation = this.getMoveNotation(square.id);
-        // console.log(notation);
-        // game.moveList.push({notation: })
+        console.log(notation);
+        game.moveList.push(notation); //TODO: make it work with piece notation that isnt just pawn moves 
         this.removeMoves();
         game.deselect();
         game.updateBoard(this.position, oldPos, pieceID);
         game.checkVictory(this.position[0]);
+        game.whiteTurn = !game.whiteTurn;
     }
 
     addNewPiece(square) {
@@ -128,18 +130,25 @@ class Piece {
         }
     }
 
+    isSquare(rank, file) {
+        if ((rank < 8 && rank > -1) && (file < 8 && file > -1)) {
+            return true;
+        }
+        return false;
+    }
+
     // checkMoves() {
     //     return true;
     // }
 }
 
 class Pawn extends Piece {
-    hasMoved;
     constructor(startPosition, color, id) {
         super(startPosition, color, id);
         this.hasMoved = false;
         this.type = "pawn";
     }
+
     checkMoves() {
         let moveTwo = false;
         let moves = [];
@@ -159,11 +168,11 @@ class Pawn extends Piece {
 
         return moves;
     }
+
     checkCaptures() {
         let captures = [];
         let captureOne = false;
         let captureTwo = false;
-        // console.log(game.checkPieceColor(this.color, [this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]-1]));
             if (this.position[1] > 0) {
             captureOne = !game.isEmptySquare(this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]-1)
                          && game.checkPieceColor(this.color, [this.color == 'white' ? this.position[0]+1 : this.position[0]-1, this.position[1]-1]);
@@ -187,7 +196,61 @@ class Rook extends Piece {
 }
 
 class Knight extends Piece {
-    
+    moveTypes;
+    constructor(startPosition, color, id) {
+        super(startPosition, color, id);
+        this.hasMoved = false;
+        this.type = "knight";
+        this.moveTypes = [[2,-1],[2,1],[1,2],[-1,2],[-2,-1],[-2,1],[-1,-2],[1,-2]];
+    }
+
+    checkMoves() {
+        let moves = [];
+        let capOptions = [];
+        this.moveTypes.forEach(m => {
+            let moveOpt = [this.position[0] + m[0], this.position[1] + m[1]];
+            if (this.isSquare(moveOpt[0], moveOpt[1])) {
+                if (game.isEmptySquare(moveOpt[0],moveOpt[1])) {
+                    moves.push(game.getPosString(moveOpt[0], moveOpt[1]));
+                }
+                else {
+                    capOptions.push(moveOpt);
+                }
+            }
+        });
+        let captures = this.checkCaptures(capOptions);
+        return [moves, captures];
+    }
+
+    checkCaptures(capOptions) {
+        let captures = [];
+        capOptions.forEach( c => {
+            if (game.checkPieceColor(this.color, c)) {
+                captures.push(game.getPosString(c[0], c[1]))
+            }
+        });
+        return captures;
+    }
+
+    showMoves() {
+        let moveCaps = this.checkMoves();
+        let moves = moveCaps[0];
+        let captures = moveCaps[1];
+        if (moves.length > 0) {
+            moves.forEach( m => {
+                let mySquare = document.getElementById(m);
+                mySquare.onclick = this.movePiece.bind(this, mySquare);
+                mySquare.classList.add('moveOption');
+            });
+        }
+        if (captures.length > 0) {
+            captures.forEach( m => {
+                let mySquare = document.getElementById(m);
+                mySquare.onclick = this.movePiece.bind(this, mySquare);
+                mySquare.classList.add('captureOption');
+            });
+        }
+    }
 }
 
 class Bishop extends Piece {
@@ -204,6 +267,10 @@ class King extends Piece {
 
 class Game {
     board;
+
+    b8knight;
+    g8knight;
+
     a7pawn;
     b7pawn;
     c7pawn;
@@ -221,11 +288,19 @@ class Game {
     f2pawn;
     g2pawn;
     h2pawn;
+
+    b1knight;
+    g1knight;
+
     selected;
     pieces;
     gameOver;
     moveList;
+    whiteTurn;
     constructor() {
+        this.b1knight = new Knight([0,1],'white', 'nb1');
+        this.g1knight = new Knight([0,6],'white', 'ng1');
+
         this.a2pawn = new Pawn([1,0],'white','pa2');
         this.b2pawn = new Pawn([1,1],'white','pb2');
         this.c2pawn = new Pawn([1,2],'white','pc2');
@@ -244,20 +319,26 @@ class Game {
         this.g7pawn = new Pawn([6,6],'black','pg7');
         this.h7pawn = new Pawn([6,7],'black','ph7');
 
-        this.pieces = [this.a2pawn,this.b2pawn,this.c2pawn,this.d2pawn,this.e2pawn,this.f2pawn,this.g2pawn,this.h2pawn,
-                       this.a7pawn,this.b7pawn,this.c7pawn,this.d7pawn,this.e7pawn,this.f7pawn,this.g7pawn,this.h7pawn];
+        this.b8knight = new Knight([7,1],'black', 'nb8');
+        this.g8knight = new Knight([7,6],'black', 'ng8');
 
-        this.board = [["", "", "", "", "", "", "", ""],
+        this.pieces = [this.b1knight, this.g1knight, 
+                       this.a2pawn,this.b2pawn,this.c2pawn,this.d2pawn,this.e2pawn,this.f2pawn,this.g2pawn,this.h2pawn,
+                       this.a7pawn,this.b7pawn,this.c7pawn,this.d7pawn,this.e7pawn,this.f7pawn,this.g7pawn,this.h7pawn,
+                       this.b8knight, this.g8knight];
+
+        this.board = [["", this.b1knight, "", "", "", "", this.g1knight, ""],
                       [this.a2pawn,this.b2pawn,this.c2pawn,this.d2pawn,this.e2pawn,this.f2pawn,this.g2pawn,this.h2pawn],
                       ["", "", "", "", "", "", "", ""],
                       ["", "", "", "", "", "", "", ""],
                       ["", "", "", "", "", "", "", ""],
                       ["", "", "", "", "", "", "", ""],
                       [this.a7pawn,this.b7pawn,this.c7pawn,this.d7pawn,this.e7pawn,this.f7pawn,this.g7pawn,this.h7pawn],
-                      ["", "", "", "", "", "", "", ""]];
+                      ["", this.b8knight, "", "", "", "", this.g8knight, ""]];
         this.selected = null;
         this.gameOver = false;
         this.moveList = [];
+        this.whiteTurn = true;
         this.resetBoard();
     }
 
@@ -524,9 +605,11 @@ class Game {
                 //     default:
                 //         console.log(pieceType);
                 // }
-
-                let pieceID = this.getPieceID(document.getElementById(square.id).classList);
-                this.selectPiece(pieceID);
+                let color = piece.substring(61,62);
+                if (color == 'w' && this.whiteTurn || color == 'b' && !this.whiteTurn) {
+                    let pieceID = this.getPieceID(document.getElementById(square.id).classList);
+                    this.selectPiece(pieceID);
+                }
             }
         }
     }
