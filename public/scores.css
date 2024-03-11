@@ -1,0 +1,11 @@
+.spacer {
+    padding-top: 5vh;
+}
+
+.darkList {
+    background-color: rgb(255,255,255,0.25);
+}
+
+.table-striped-columns > tbody > tr:nth-child(2n+1) > td, .table-striped-columns > tbody > tr:nth-child(2n+1) > th {
+    background-color: rgb(180,180,255,0.25)
+}

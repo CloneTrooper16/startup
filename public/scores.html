@@ -15,6 +15,7 @@
     />
 
     <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="scores.css" />
 
   </head>
 
@@ -47,6 +48,18 @@
       <p id="wins">Wins:</p>
       <p id="almostWins">Almost Wins:</p>
       <!-- <p id="draws">Draws: 1</p> -->
+      <h1 class="spacer">High Scores</h1>
+      <table class="table table-warning table-striped-columns">
+        <thead class="table-dark">
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Score</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="scores"></tbody>
+      </table>
     </main>
 
     <footer>
