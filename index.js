@@ -50,10 +50,12 @@ function updateScores(newScore, scores) {
             }
             break;
         }
+        
     }
     if (!found) {
         scores.push(newScore);
     }
+    scores.sort((a,b) => b.wins - a.wins);
     // found = false;
     // for (const [i, prevScore] of scores.entries()) {
     //     if (newScore.score > prevScore.score) {

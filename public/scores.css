@@ -2,10 +2,14 @@
     padding-top: 5vh;
 }
 
-.darkList {
+/* .darkList {
     background-color: rgb(255,255,255,0.25);
+} */
+
+/* .table-striped > tbody > tr:nth-of-type(odd) {
+    background-color: #d43232 !important;
 }
 
-.table-striped-columns > tbody > tr:nth-child(2n+1) > td, .table-striped-columns > tbody > tr:nth-child(2n+1) > th {
-    background-color: rgb(180,180,255,0.25)
-}
+.table-striped > tbody > tr:nth-of-type(even) {
+    background-color: #6c1b1b;
+} */
