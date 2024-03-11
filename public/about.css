@@ -10,3 +10,14 @@
 .pictureBox img {
     width: 45vw;
 }
+
+.quote-box {
+    /* margin-top: 1em; */
+    padding: 0.5em;
+    border-radius: 5px;
+    background-color: rgb(255,255,255,0.1);
+}
+
+.quote {
+    margin-bottom: 0;
+}
