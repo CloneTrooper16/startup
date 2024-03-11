@@ -641,10 +641,10 @@ class Game {
             });
             const scores = await response.json();
             localStorage.setItem('scores', JSON.stringify(scores));
-            } catch {
-            // If there was an error then just track scores locally
-            // this.updateScoresLocal(newScore);
-            console.log("eror");
+        } catch {
+                // If there was an error then just track scores locally
+                // this.updateScoresLocal(newScore);
+                console.log("eror");
             }
         }
 }

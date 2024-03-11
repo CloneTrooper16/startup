@@ -28,6 +28,21 @@ apiRouter.get('/scores', (_req, res) => {
     res.send(scores);
 });
 
+// get single users scores
+apiRouter.get('/scores/:userName', (req, res) => {
+    const userName = req.params.userName;
+    const userScore = scores.find(s => s.name === userName);
+    
+    if (userScore) {
+        res.send(userScore);
+    } else {
+        res.send({name: userName, wins: 0, losses: 0})
+    }
+
+    // res.send(`received param: ${userName}`);
+    // res.send(scores.find(s => s.name == userName));
+});
+
 // UpdateScores
 apiRouter.put('/score', (req, res) => {
     // updateUserScores(req.body, user); TODO: once authenitication exists, user this for individual scores

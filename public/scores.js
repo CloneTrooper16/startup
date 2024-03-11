@@ -1,16 +1,36 @@
+function getPlayerName() {
+  return localStorage.getItem('userName') ?? 'Mystery player';
+}
+
 const playerWins = document.getElementById("wins");
 const playerAlmostWins = document.getElementById("almostWins");
+const playerNameEl = document.querySelector('.playerName');
+this.getUserScores();
 
-playerWins.textContent = "Wins: " + Math.floor(Math.random()*1000);
-playerAlmostWins.textContent = "Almost Wins: " + Math.floor(Math.random()*1000);
+playerNameEl.textContent = this.getPlayerName() + "'s Scores";
 
+async function getUserScores() {
+  let userData = [0,0];
+  try {
+    userName = localStorage.getItem('userName') ?? 'Mystery player';
+    const response = await fetch(`/api/scores/${userName}`);
+    userData = await response.json();
+    // const data = await response.json();
+    // console.log("UserData:", userData);
+    playerWins.textContent = "Wins: " + userData.wins;
+    playerAlmostWins.textContent = "Almost Wins: " + userData.losses;
+    // return userData;
+  } catch {
+    console.log(`error getting ${userName}'s score`);
+  }
+}
 
 async function loadScores() {
     let scores = [];
     try {
       const response = await fetch('/api/scores');
+      // console.log("repons", response);
       scores = await response.json();
-
       localStorage.setItem('scores', JSON.stringify(scores));
     } catch {
       const scoresText = localStorage.getItem('scores');
@@ -52,3 +72,5 @@ async function loadScores() {
   }
 
   loadScores();
+
+
