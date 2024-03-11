@@ -39,3 +39,10 @@ My startup will be a simple chess game. This online web application will be acce
 - __database__: The scores page currently displays dummy data for your record, but will be replaced with actual win/loss count and a leaderboard.
 - __WebSocket__: I used the setInterval() function to generate messages that will be replaced with message of actual games starting and finishing.
 - __Application logic__: ChessPawns is a fully functioning pawn game that displays a win message when someone moves a pawn to the other side. 
+
+## Service Deliverable:
+- __Node.js/Express HTTP service__: Done!
+- __Static middleware for frontend__: Done!
+- __Calls to third party endpoints__: The about page calls for a random piece of advice using fetch.
+- __Backend service endpoints__: endpoints for getting individual and highscores.
+- __Frontend calls service endpoints__: Used fetch to call the endpoints.
