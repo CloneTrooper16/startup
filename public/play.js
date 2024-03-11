@@ -369,10 +369,12 @@ class Game {
         if (piece == "pawn") {
             if (pos == 7) {
                 document.getElementById("victor").textContent = "White Wins!";
+                this.saveScore('win');
                 this.gameOver = true;
             }
             else if (pos == 0) {
                 document.getElementById("victor").textContent = "Black Wins!";
+                this.saveScore('loss');
                 this.gameOver = true;
             }
         }
@@ -658,10 +660,10 @@ playerNameEl.textContent = this.getPlayerName();
 playerIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";
 
 //placeholder for webSocket
-// setInterval(() => {
-//     // const score = Math.floor(Math.random() * 3000);
-//     const chatText = document.querySelector('#player-messages');
-//     chatText.innerHTML =
-//       `<div class="event"><span class="player-event">somePlayer</span> started a new game</div>` +
-//       chatText.innerHTML;
-//   }, 5000);
+setInterval(() => {
+    // const score = Math.floor(Math.random() * 3000);
+    const chatText = document.querySelector('#player-messages');
+    chatText.innerHTML =
+      `<div class="event"><span class="player-event">somePlayer</span> started a new game</div>` +
+      chatText.innerHTML;
+  }, 5000);
