@@ -28,8 +28,9 @@ apiRouter.get('/scores', (_req, res) => {
     res.send(scores);
 });
 
-// SubmitScore
-apiRouter.post('/score', (req, res) => {
+// UpdateScores
+apiRouter.put('/score', (req, res) => {
+    // updateUserScores(req.body, user); TODO: once authenitication exists, user this for individual scores
     scores = updateScores(req.body, scores);
     res.send(scores);
 });
@@ -38,21 +39,37 @@ apiRouter.post('/score', (req, res) => {
 let scores = [];
 function updateScores(newScore, scores) {
     let found = false;
-    for (const [i, prevScore] of scores.entries()) {
-        if (newScore.score > prevScore.score) {
-        scores.splice(i, 0, newScore);
-        found = true;
-        break;
+    for (const i of scores.entries()) {
+        if (newScore.name == i[1].name) {
+            found = true;
+            if (newScore.wins) {
+                i[1].wins++;
+            }
+            else {
+                i[1].losses++;
+            }
+            break;
         }
     }
-
     if (!found) {
         scores.push(newScore);
     }
+    // found = false;
+    // for (const [i, prevScore] of scores.entries()) {
+    //     if (newScore.score > prevScore.score) {
+    //         scores.splice(i, 0, newScore);
+    //         found = true;
+    //         break;
+    //     }
+    // }
 
-    if (scores.length > 10) {
-        scores.length = 10;
-    }
+    // if (!found) {
+    //     scores.push(newScore);
+    // }
+
+    // if (scores.length > 10) {
+    //     scores.length = 10;
+    // }
 
     return scores;
 }

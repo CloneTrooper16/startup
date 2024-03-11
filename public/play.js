@@ -615,6 +615,38 @@ class Game {
             }
         }
     }
+
+    getPlayerName() {
+        return localStorage.getItem('userName') ?? 'Mystery player';
+    }
+    async saveScore(score) {
+        console.log(score);
+        const userName = this.getPlayerName();
+        // const date = new Date().toLocaleDateString();
+        let wins, losses;
+        if (score == "win") {
+            wins = 1;
+            losses = 0;
+        } else {
+            wins = 0;
+            losses = 1;
+        }
+        const newScore = {name: userName, wins: wins, losses: losses};
+    
+        try {
+            const response = await fetch('/api/score', {
+                method: 'PUT',
+                headers: {'content-type': 'application/json'},
+                body: JSON.stringify(newScore),
+            });
+            const scores = await response.json();
+            localStorage.setItem('scores', JSON.stringify(scores));
+            } catch {
+            // If there was an error then just track scores locally
+            // this.updateScoresLocal(newScore);
+            console.log("eror");
+            }
+        }
 }
 
 const game = new Game();

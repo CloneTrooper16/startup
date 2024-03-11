@@ -29,20 +29,20 @@ async function loadScores() {
       for (const [i, score] of scores.entries()) {
         const positionTdEl = document.createElement('td');
         const nameTdEl = document.createElement('td');
-        const scoreTdEl = document.createElement('td');
-        const dateTdEl = document.createElement('td');
+        const winTdEl = document.createElement('td');
+        const lossesTdEl = document.createElement('td');
   
         positionTdEl.textContent = i + 1;
         nameTdEl.textContent = score.name;
-        scoreTdEl.textContent = score.score;
-        dateTdEl.textContent = score.date;
+        winTdEl.textContent = score.wins;
+        lossesTdEl.textContent = score.losses;
   
         const rowEl = document.createElement('tr');
         rowEl.classList.add("darkList");
         rowEl.appendChild(positionTdEl);
         rowEl.appendChild(nameTdEl);
-        rowEl.appendChild(scoreTdEl);
-        rowEl.appendChild(dateTdEl);
+        rowEl.appendChild(winTdEl);
+        rowEl.appendChild(lossesTdEl);
   
         tableBodyEl.appendChild(rowEl);
       }
