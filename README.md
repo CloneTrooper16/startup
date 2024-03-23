@@ -46,3 +46,11 @@ My startup will be a simple chess game. This online web application will be acce
 - __Calls to third party endpoints__: The about page calls for a random piece of advice using fetch.
 - __Backend service endpoints__: endpoints for getting individual and highscores.
 - __Frontend calls service endpoints__: Used fetch to call the endpoints.
+
+## DB/Login Deliverable:
+- __MongoDB Atlas Database Created__: Done!
+- __Stores Data in Mongo__: Done!
+- __User Registration__: creates a new user when pressing create if username doesn't already exist.
+- __Existing User__: logs into existing user if password is correct.
+- __Use MongoDB to store credentials__: stores both the user and their scores.
+- __Restricts functionality__: you can't navigate away from login page or save scores without logging in.
