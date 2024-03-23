@@ -13,7 +13,44 @@ const scoreCollection = db.collection('score');
 (async function testConnection() {
     await client.connect();
     await db.command({ ping: 1 });
-  })().catch((ex) => {
+})().catch((ex) => {
     console.log(`Unable to connect to database with ${url} because ${ex.message}`);
     process.exit(1);
-  });
+});
+
+//get functions
+function getUser(email) {
+    return userCollection.findOne({ email: email });
+}
+  
+function getUserByToken(token) {
+    return userCollection.findOne({ token: token });
+}
+
+async function createUser(email, password) {
+    //hash the password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const user = {
+        email: email,
+        password: passwordHash,
+        token: uuid.v4(),
+    };
+    await userCollection.insertOne(user);
+  
+    return user;
+}
+
+function addScore(score) {
+    scoreCollection.insertOne(score);
+}
+
+function getHighScores() {
+    const query = { score: { $gt: 0, $lt: 900 } };
+    const options = {
+        sort: { score: -1 },
+        limit: 10,
+    };
+    const cursor = scoreCollection.find(query, options);
+    return cursor.toArray();
+}
