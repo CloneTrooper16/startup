@@ -71,6 +71,10 @@ function getHighScores() {
     return cursor.toArray();
 }
 
+async function getUserScores(user) {
+    return scoreCollection.findOne({name: user})
+}
+
 module.exports = {
     getUser,
     getUserByToken,
@@ -78,4 +82,5 @@ module.exports = {
     addScore,
     updateScore,
     getHighScores,
+    getUserScores,
 };

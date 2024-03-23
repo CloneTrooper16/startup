@@ -29,7 +29,7 @@ async function loadScores() {
     let scores = [];
     try {
       const response = await fetch('/api/scores');
-      // console.log("repons", response);
+    //   console.log("repons", response);
       scores = await response.json();
       localStorage.setItem('scores', JSON.stringify(scores));
     } catch {
@@ -38,7 +38,7 @@ async function loadScores() {
         scores = JSON.parse(scoresText);
       }
     }
-  
+
     displayScores(scores);
   }
   
