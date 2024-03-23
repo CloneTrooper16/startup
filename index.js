@@ -106,7 +106,7 @@ secureApiRouter.get('/scores', async (req, res) => {
 });
 
 // get single users scores
-apiRouter.get('/scores/:userName', (req, res) => {
+secureApiRouter.get('/scores/:userName', (req, res) => {
     const userName = req.params.userName;
     const userScore = scores.find(s => s.name === userName);
     
@@ -120,12 +120,12 @@ apiRouter.get('/scores/:userName', (req, res) => {
     // res.send(scores.find(s => s.name == userName));
 });
 
-
-
 // UpdateScores
-secureApiRouter.post('/score', async (req, res) => {
+secureApiRouter.put('/score', async (req, res) => {
     const score = { ...req.body, ip: req.ip };
-    await DB.addScore(score);
+    console.log(score);
+    let response = await DB.updateScore(score);
+    console.log(response);
     const scores = await DB.getHighScores();
     res.send(scores);
 });

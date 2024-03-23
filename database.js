@@ -45,6 +45,22 @@ function addScore(score) {
     scoreCollection.insertOne(score);
 }
 
+async function updateScore(score) {
+    const query = { name: score.name};
+    let user = await scoreCollection.findOne(query);
+    if (user) {
+        let newScore = user;
+        if (score.wins) {
+            newScore.wins++
+        } else {
+            newScore.losses++;
+        }
+        await scoreCollection.updateOne(query, { $set: newScore });
+    } else {
+        addScore(score);
+    }
+}
+
 function getHighScores() {
     const query = { score: { $gt: 0, $lt: 900 } };
     const options = {
@@ -60,5 +76,6 @@ module.exports = {
     getUserByToken,
     createUser,
     addScore,
+    updateScore,
     getHighScores,
 };
