@@ -138,26 +138,26 @@ secureApiRouter.post('/score', async (req, res) => {
 // });
   
 //calculates high scores
-let scores = [];
-function updateScores(newScore, scores) {
-    let found = false;
-    for (const i of scores.entries()) {
-        if (newScore.name == i[1].name) {
-            found = true;
-            if (newScore.wins) {
-                i[1].wins++;
-            }
-            else {
-                i[1].losses++;
-            }
-            break;
-        }
+// let scores = [];
+// function updateScores(newScore, scores) {
+//     let found = false;
+//     for (const i of scores.entries()) {
+//         if (newScore.name == i[1].name) {
+//             found = true;
+//             if (newScore.wins) {
+//                 i[1].wins++;
+//             }
+//             else {
+//                 i[1].losses++;
+//             }
+//             break;
+//         }
         
-    }
-    if (!found) {
-        scores.push(newScore);
-    }
-    scores.sort((a,b) => b.wins - a.wins);
+//     }
+//     if (!found) {
+//         scores.push(newScore);
+//     }
+//     scores.sort((a,b) => b.wins - a.wins);
     // found = false;
     // for (const [i, prevScore] of scores.entries()) {
     //     if (newScore.score > prevScore.score) {
@@ -175,8 +175,8 @@ function updateScores(newScore, scores) {
     //     scores.length = 10;
     // }
 
-    return scores;
-}
+//     return scores;
+// }
 
 // setAuthCookie in the HTTP response
 function setAuthCookie(res, authToken) {
