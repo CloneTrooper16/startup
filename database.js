@@ -54,3 +54,11 @@ function getHighScores() {
     const cursor = scoreCollection.find(query, options);
     return cursor.toArray();
 }
+
+module.exports = {
+    getUser,
+    getUserByToken,
+    createUser,
+    addScore,
+    getHighScores,
+};
