@@ -108,9 +108,7 @@ secureApiRouter.get('/scores', async (req, res) => {
 // get single users scores
 secureApiRouter.get('/scores/:userName', async (req, res) => {
     const userName = req.params.userName;
-    console.log(userName);
     const userScore = await DB.getUserScores(userName);
-    console.log(userScore);
     if (userScore) {
         res.send(userScore);
     } else {
