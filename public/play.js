@@ -297,6 +297,8 @@ class Game {
     gameOver;
     moveList;
     whiteTurn;
+    socket;
+
     constructor() {
         this.b1knight = new Knight([0,1],'white', 'nb1');
         this.g1knight = new Knight([0,6],'white', 'ng1');
@@ -340,6 +342,7 @@ class Game {
         this.moveList = [];
         this.whiteTurn = true;
         this.resetBoard();
+        this.configureWebSocket();
     }
 
     resetBoard() {
@@ -643,12 +646,31 @@ class Game {
             });
             const scores = await response.json();
             localStorage.setItem('scores', JSON.stringify(scores));
-        } catch {
-                // If there was an error then just track scores locally
-                // this.updateScoresLocal(newScore);
-                console.log("eror");
-            }
+        } 
+        catch {
+            // If there was an error then just track scores locally
+            // this.updateScoresLocal(newScore);
+            console.log("eror");
         }
+    }
+
+    // Functionality for peer communication using WebSocket
+
+    configureWebSocket() {
+        const protocol = window.location.protocol === 'http:' ? 'ws' : 'wss';
+        this.socket = new WebSocket(`${protocol}://${window.location.host}/ws`);
+        this.socket.onopen = (event) => {
+            this.displayMsg('system', 'game', 'connected');
+        };
+        this.socket.onclose = (event) => {
+            this.displayMsg('system', 'game', 'disconnected');
+        };
+    }
+    displayMsg(cls, from, msg) {
+        const chatText = document.querySelector('#player-messages');
+        chatText.innerHTML =
+            `<div class="event"><span class="${cls}-event">${from}</span> ${msg}</div>` + chatText.innerHTML;
+    }
 }
 
 const game = new Game();
@@ -660,10 +682,10 @@ playerNameEl.textContent = this.getPlayerName();
 playerIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";
 
 //placeholder for webSocket
-setInterval(() => {
-    // const score = Math.floor(Math.random() * 3000);
-    const chatText = document.querySelector('#player-messages');
-    chatText.innerHTML =
-      `<div class="event"><span class="player-event">somePlayer</span> started a new game</div>` +
-      chatText.innerHTML;
-  }, 5000);
+// setInterval(() => {
+//     // const score = Math.floor(Math.random() * 3000);
+//     const chatText = document.querySelector('#player-messages');
+//     chatText.innerHTML =
+//       `<div class="event"><span class="player-event">somePlayer</span> started a new game</div>` +
+//       chatText.innerHTML;
+//   }, 5000);
