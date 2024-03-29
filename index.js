@@ -186,3 +186,5 @@ function setAuthCookie(res, authToken) {
         sameSite: 'strict',
     });
 }
+
+peerProxy(httpService);
