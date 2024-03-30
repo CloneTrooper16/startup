@@ -48,6 +48,8 @@ class Piece {
         game.updateBoard(this.position, oldPos, pieceID);
         game.checkVictory(this.position[0], this.type);
         game.whiteTurn = !game.whiteTurn;
+        game.broadcastEvent(game.getPlayerName(), "pieceMoved", {piece: this, movSquare: square.id});
+        game.broadcastEvent(game.getPlayerName(), "turnTaken", this.playerColor);
     }
 
     addNewPiece(square) {
@@ -298,6 +300,7 @@ class Game {
     moveList;
     whiteTurn;
     socket;
+    playerColor;
 
     constructor() {
         this.b1knight = new Knight([0,1],'white', 'nb1');
@@ -341,12 +344,14 @@ class Game {
         this.gameOver = false;
         this.moveList = [];
         this.whiteTurn = true;
-        this.resetBoard();
+        this.resetBoard(this.board);
+        this.checkPlayerColor();
         this.configureWebSocket();
     }
 
-    resetBoard() {
-        this.board.forEach( row => {
+    resetBoard(board) {
+        this.board = board;
+        board.forEach( row => {
             row.forEach( piece => {
                 if (piece != "") {
                     let pos = this.getPosString(piece.position[0],piece.position[1]);
@@ -366,6 +371,23 @@ class Game {
         let movedPiece = this.getPiece(pieceID);
         this.board[newPos[0]][newPos[1]] = movedPiece;
         this.board[oldPos[0]][oldPos[1]] = "";
+    }
+
+    checkPlayerColor() {
+        if (this.playerColor != "black" || this.playerColor != "white") {
+            const colorChoices = document.querySelector('#colorChoices');
+            colorChoices.innerHTML =
+                `<div class="colorChoose">Pick your color</div>
+                <button type="button" class="btn btn-primary blackBtn" onclick="game.setPlayerColor('black')">Black</button>
+                <button type="button" class="btn btn-primary whiteBtn" onclick="game.setPlayerColor('white')">White</button>`;
+        }
+    }
+
+    setPlayerColor(color) {
+        this.playerColor = color;
+        const colorChoices = document.querySelector('#colorChoices');
+            colorChoices.innerHTML = `<div class="${color}Player">Your team: ${color}</div>`;
+        this.broadcastEvent(this.getPlayerName(), "colorPick", color);
     }
     
     checkVictory(pos, piece) {
@@ -568,6 +590,10 @@ class Game {
         return this.pieces.find( p => p.position[0] == piecePos[0] && p.position[1] == piecePos[1]).color;
     }
 
+    getSquare(squareID) {
+        return document.getElementById(squareID);
+    }
+
     isEmptySquare(rank, file) {
         if (this.board[rank][file] != "") {
             return false;
@@ -608,14 +634,12 @@ class Game {
 
             if (piece.includes(".png")) {
                 // let pieceType = piece.substring(61,63);
-                // switch(pieceType) {
-                //     default:
-                //         console.log(pieceType);
-                // }
                 let color = piece.substring(61,62);
-                if (color == 'w' && this.whiteTurn || color == 'b' && !this.whiteTurn) {
-                    let pieceID = this.getPieceID(document.getElementById(square.id).classList);
-                    this.selectPiece(pieceID);
+                if (this.playerColor && color == this.playerColor.at(0)) {
+                    if (color == 'w' && this.whiteTurn || color == 'b' && !this.whiteTurn) {
+                        let pieceID = this.getPieceID(document.getElementById(square.id).classList);
+                        this.selectPiece(pieceID);
+                    }
                 }
             }
         }
@@ -666,7 +690,20 @@ class Game {
             this.displayMsg('system', 'game', 'disconnected');
         };
         this.socket.onmessage = async (event) => {
-            
+            const msg = JSON.parse(await event.data.text());
+            if (msg.type === "colorPick") {
+                this.displayMsg('player', msg.from, `picked ${msg.value}`);
+            }
+            else if (msg.type === "turnTaken") {
+                this.whiteTurn = !this.whiteTurn;
+            }
+            else if (msg.type === "pieceMoved") {
+                console.log("here", msg.value);
+                let movedPiece = this.getPiece("id" + msg.value.piece.id);
+                let movSquare = this.getSquare(msg.value.movSquare);
+                movedPiece.movePiece(movSquare);
+                this.displayMsg('player', msg.from, `moved ${msg.value}`);
+            }
         };
         // this.socket.onmessage = async (event) => {
         //     const msg = JSON.parse(await event.data.text());
@@ -684,12 +721,23 @@ class Game {
         chatText.innerHTML =
             `<div class="event"><span class="${cls}-event">${from}</span> ${msg}</div>` + chatText.innerHTML;
     }
+
+    broadcastEvent(from, type, value) {
+        const event = {
+            from: from,
+            type: type,
+            value: value,
+        };
+        this.socket.send(JSON.stringify(event));
+    }
 }
 
 const game = new Game();
 
 const playerNameEl = document.querySelector('.playerName');
-const playerIconEl = document.querySelector('.playerIcon')
+const playerIconEl = document.querySelector('.playerIcon');
+
+
 
 playerNameEl.textContent = this.getPlayerName();
 playerIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";

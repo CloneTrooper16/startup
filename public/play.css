@@ -62,10 +62,17 @@
     bottom: 40px;
 }
 
-#player-messages {
+#colorChoices {
     position: absolute;
     left: 5px;
     top: 80px;
+    /* padding-top: 0.25em; */
+}
+
+#player-messages {
+    position: absolute;
+    left: 5px;
+    top: 140px;
     padding-top: 0.25em;
     opacity: 0.5;
 }
