@@ -24,30 +24,7 @@ class Piece {
     }
 
     movePiece(square) {
-        this.hasMoved = true;
-        let pos = game.getPosString(this.position[0],this.position[1]);
-        let oldSquare = document.getElementById(pos);
-        let oldPos = this.position;
-        oldSquare.firstElementChild.src = "";
-        
-        let pieceID = "id" + this.id;
-        this.position = this.getNewPosition(square.id);
-        if(!game.isEmptySquare(this.position[0],this.position[1])) {
-            game.removeCapture(square);
-        }
-
-        this.addNewPiece(square);
-
-        oldSquare.classList.remove(pieceID);
-        square.classList.add(pieceID);
-        let notation = this.getMoveNotation(square.id);
-        console.log(notation);
-        game.moveList.push(notation); //TODO: make it work with piece notation that isnt just pawn moves 
-        this.removeMoves();
-        game.deselect();
-        game.updateBoard(this.position, oldPos, pieceID);
-        game.checkVictory(this.position[0], this.type);
-        game.whiteTurn = !game.whiteTurn;
+        this.movePieceRemote(square);
         game.broadcastEvent(game.getPlayerName(), "pieceMoved", {piece: this, movSquare: square.id});
         game.broadcastEvent(game.getPlayerName(), "turnTaken", this.playerColor);
     }
@@ -412,8 +389,25 @@ class Game {
     setPlayerColor(color) {
         this.playerColor = color;
         const colorChoices = document.querySelector('#colorChoices');
-            colorChoices.innerHTML = `<div class="${color}Player">Your team: ${color}</div>`;
+        colorChoices.innerHTML = `<div class="${color}Player">Your team: ${color}</div>`;
+        this.setIcons(this.getPlayerName(), getPlayerIcon(), color);
         this.broadcastEvent(this.getPlayerName(), "colorPick", color);
+    }
+
+    setIcons(playerName, icon, color) {
+        console.log(playerName);
+        if (color == 'white') {
+            const whiteNameEl = document.querySelector('.playerWName');
+            const whiteIconEl = document.querySelector('.playerWIcon');
+            whiteNameEl.textContent = playerName;
+            whiteIconEl.src = "https://robohash.org/" + icon + ".png";
+        }
+        else {
+            const blackNameEl = document.querySelector('.playerBName');
+            const blackIconEl = document.querySelector('.playerBIcon');
+            blackNameEl.textContent = playerName;
+            blackIconEl.src = "https://robohash.org/" + icon + ".png";
+        }
     }
     
     checkVictory(pos, piece) {
@@ -722,7 +716,7 @@ class Game {
             }
             else if (msg.type === "turnTaken") {
                 this.whiteTurn = !this.whiteTurn;
-                this.displayMsg('player', msg.from, `${msg.value.color}'s turn`);
+                // this.displayMsg('player', msg.from, `${msg.value.color}'s turn`);
             }
             else if (msg.type === "pieceMoved") {
                 console.log("here", msg.value);
@@ -761,13 +755,15 @@ class Game {
 
 const game = new Game();
 
-const playerNameEl = document.querySelector('.playerName');
-const playerIconEl = document.querySelector('.playerIcon');
+const whiteNameEl = document.querySelector('.playerWName');
+const whiteIconEl = document.querySelector('.playerWIcon');
+const blackNameEl = document.querySelector('.playerBName');
+const blackIconEl = document.querySelector('.playerBIcon');
 
 
 
-playerNameEl.textContent = this.getPlayerName();
-playerIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";
+// whiteNameEl.textContent = this.getPlayerName();
+// whiteIconEl.src = "https://robohash.org/" + this.getPlayerIcon() + ".png";
 
 //placeholder for webSocket
 // setInterval(() => {
