@@ -54,3 +54,9 @@ My startup will be a simple chess game. This online web application will be acce
 - __Existing User__: logs into existing user if password is correct.
 - __Use MongoDB to store credentials__: stores both the user and their scores.
 - __Restricts functionality__: you can't navigate away from login page or save scores without logging in.
+
+## WebSocket Deliverable:
+- __Backend listens for WebSocket connection__: You bet it does!
+- __Frontend makes WebSocket connection__: You better believe it!
+- __Data sent over a WebSocket connection__: It goes from one client to other, truly incredible!
+- __WebSocket data displayed__: Player Icons update when color is picked and pieces move in real time.
