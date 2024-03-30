@@ -391,11 +391,10 @@ class Game {
         const colorChoices = document.querySelector('#colorChoices');
         colorChoices.innerHTML = `<div class="${color}Player">Your team: ${color}</div>`;
         this.setIcons(this.getPlayerName(), getPlayerIcon(), color);
-        this.broadcastEvent(this.getPlayerName(), "colorPick", color);
+        this.broadcastEvent(this.getPlayerName(), "colorPick", {pColor: color, pName: this.getPlayerName(), pIcon: getPlayerIcon()});
     }
 
     setIcons(playerName, icon, color) {
-        console.log(playerName);
         if (color == 'white') {
             const whiteNameEl = document.querySelector('.playerWName');
             const whiteIconEl = document.querySelector('.playerWIcon');
@@ -712,7 +711,8 @@ class Game {
         this.socket.onmessage = async (event) => {
             const msg = JSON.parse(await event.data.text());
             if (msg.type === "colorPick") {
-                this.displayMsg('player', msg.from, `picked ${msg.value}`);
+                this.setIcons(msg.value.pName, msg.value.pIcon, msg.value.pColor);
+                this.displayMsg('player', msg.from, `picked ${msg.value.pColor}`);
             }
             else if (msg.type === "turnTaken") {
                 this.whiteTurn = !this.whiteTurn;
