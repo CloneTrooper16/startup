@@ -52,6 +52,32 @@ class Piece {
         game.broadcastEvent(game.getPlayerName(), "turnTaken", this.playerColor);
     }
 
+    movePieceRemote(square) {
+        this.hasMoved = true;
+        let pos = game.getPosString(this.position[0],this.position[1]);
+        let oldSquare = document.getElementById(pos);
+        let oldPos = this.position;
+        oldSquare.firstElementChild.src = "";
+        
+        let pieceID = "id" + this.id;
+        this.position = this.getNewPosition(square.id);
+        if(!game.isEmptySquare(this.position[0],this.position[1])) {
+            game.removeCapture(square);
+        }
+
+        this.addNewPiece(square);
+
+        oldSquare.classList.remove(pieceID);
+        square.classList.add(pieceID);
+        let notation = this.getMoveNotation(square.id);
+        console.log(notation);
+        game.moveList.push(notation); //TODO: make it work with piece notation that isnt just pawn moves 
+        this.removeMoves();
+        game.deselect();
+        game.updateBoard(this.position, oldPos, pieceID);
+        game.checkVictory(this.position[0], this.type);
+    }
+
     addNewPiece(square) {
         let pieceType = game.getPieceType(this.type);
         let pieceColor = game.getPieceColor(this.color);
@@ -696,13 +722,14 @@ class Game {
             }
             else if (msg.type === "turnTaken") {
                 this.whiteTurn = !this.whiteTurn;
+                this.displayMsg('player', msg.from, `${msg.value.color}'s turn`);
             }
             else if (msg.type === "pieceMoved") {
                 console.log("here", msg.value);
                 let movedPiece = this.getPiece("id" + msg.value.piece.id);
                 let movSquare = this.getSquare(msg.value.movSquare);
-                movedPiece.movePiece(movSquare);
-                this.displayMsg('player', msg.from, `moved ${msg.value}`);
+                movedPiece.movePieceRemote(movSquare);
+                this.displayMsg('player', msg.from, `moved ${msg.value.piece.id}`);
             }
         };
         // this.socket.onmessage = async (event) => {
