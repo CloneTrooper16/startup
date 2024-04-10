@@ -1,0 +1,24 @@
+.pictureBox {
+    display: flex;
+    height: 40vh;
+    margin-bottom: 1em;
+    padding: 0.5em;
+    background: rgb(45, 47, 63);
+    border-radius: 10px;
+}
+
+.pictureBox img {
+    width: 45vw;
+}
+
+.quote-box {
+    /* margin-top: 1em; */
+    padding: 0.5em;
+    border-radius: 5px;
+    background-color: rgb(255,255,255,0.1);
+    max-width: 80vw;
+}
+
+.quote {
+    margin-bottom: 0;
+}

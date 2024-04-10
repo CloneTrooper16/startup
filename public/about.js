@@ -11,7 +11,7 @@ function displayQuote() {
             displayQuote();
         } else {
             const containerEl = document.querySelector('#quote');
-            console.log(data.slip);
+            // console.log(data.slip);
             const adviceEl = document.createElement('p');
             adviceEl.classList.add('quote');
             // const authorEl = document.createElement('p');

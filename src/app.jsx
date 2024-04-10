@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, NavLink, Route, Routes } from 'react-router-dom';
 import { Login } from './login/login';
 
+import { About } from './about/about';
 import { AuthState } from './login/authState.js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './app.css';
@@ -66,8 +67,8 @@ function App() {
                         exact
                     />
                     {/* <Route path='/play' element={<Play userName={userName} />} />
-                    <Route path='/scores' element={<Scores />} />
-                    <Route path='/about' element={<About />} /> */}
+                    <Route path='/scores' element={<Scores />} /> */}
+                    <Route path='/about' element={<About />} />
                     <Route path='*' element={<NotFound />} />
                 </Routes>
 
