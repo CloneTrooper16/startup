@@ -41,11 +41,12 @@
     font-size: x-large;
 }
 
-body {
+.body {
     display: flex;
     flex-direction: column;
     background-color: #566172;
     min-width: 375px;
+    /* height: 100vh; */
 }
 
 header {

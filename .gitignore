@@ -1,2 +1,5 @@
 node_modules/
 dbConfig.json
+
+/dist
+/build
