@@ -1,0 +1,8 @@
+.loginbuttons {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.smallbotMargin {
+    margin-bottom: 0.15rem;
+}

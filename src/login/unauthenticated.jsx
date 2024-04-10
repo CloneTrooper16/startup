@@ -3,6 +3,8 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import {MessageDialog} from './messageDialog';
 
+import './unauthenticated.css';
+
 export function Unauthenticated(props) {
     const [userName, setUserName] = React.useState(props.userName);
     const [password, setPassword] = React.useState('');
@@ -36,7 +38,7 @@ export function Unauthenticated(props) {
     return (
         <>
             <div>
-                <div className='input-group mb-3'>
+                <div className='input-group mb-2'>
                     <input
                         className='form-control'
                         type='text'
@@ -53,12 +55,14 @@ export function Unauthenticated(props) {
                         placeholder='password'
                     />
                 </div>
-                <Button variant='primary' onClick={() => loginUser()}>
-                    Login
-                </Button>
-                <Button variant='primary' onClick={() => createUser()}>
-                    Create
-                </Button>
+                <div className='loginbuttons'>
+                    <Button variant='primary' onClick={() => loginUser()}>
+                        Login
+                    </Button>
+                    <Button variant='primary' onClick={() => createUser()}>
+                        Create
+                    </Button>
+                </div>
             </div>
 
             <MessageDialog message={displayError} onHide={() => setDisplayError(null)} />

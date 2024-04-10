@@ -15,37 +15,39 @@ function App() {
         <BrowserRouter>
             <div className='body'>
                 <header>
-                    <h1 className='htop'>
-                        RandomChess
-                    </h1>
-                    <nav className='navbar'> 
-                        <menu className='navbar-nav'>
-                            <li className='nav-item'>
-                                <NavLink className='nav-link' to=''>
-                                    Login
-                                </NavLink>
-                            </li>
-                            {authState === AuthState.Authenticated && (
+                    <div className='leftHeader'>
+                        <h1 className='htop'>
+                            RandomChess
+                        </h1>
+                        <nav className='navbar'> 
+                            <menu className='navbar-nav'>
                                 <li className='nav-item'>
-                                    <NavLink className='nav-link' to='play'>
-                                        Play
+                                    <NavLink className='nav-link' to=''>
+                                        Login
                                     </NavLink>
                                 </li>
-                            )}
-                            {authState === AuthState.Authenticated && (
+                                {authState === AuthState.Authenticated && (
+                                    <li className='nav-item'>
+                                        <NavLink className='nav-link' to='play'>
+                                            Play
+                                        </NavLink>
+                                    </li>
+                                )}
+                                {authState === AuthState.Authenticated && (
+                                    <li className='nav-item'>
+                                        <NavLink className='nav-link' to='scores'>
+                                            Scores
+                                        </NavLink>
+                                    </li>
+                                )}
                                 <li className='nav-item'>
-                                    <NavLink className='nav-link' to='scores'>
-                                        Scores
+                                    <NavLink className='nav-link' to='about'>
+                                        About
                                     </NavLink>
                                 </li>
-                            )}
-                            <li className='nav-item'>
-                                <NavLink className='nav-link' to='about'>
-                                    About
-                                </NavLink>
-                            </li>
-                        </menu>
-                    </nav>
+                            </menu>
+                        </nav>
+                    </div>
                 </header>
 
                 <Routes>
@@ -70,7 +72,7 @@ function App() {
                 </Routes>
 
                 <footer>
-                    <a class="sourceLink" href="https://github.com/CloneTrooper16/startup">Spencer Winward's GitHub</a>
+                    <a className="sourceLink" href="https://github.com/CloneTrooper16/startup">Spencer Winward's GitHub</a>
                 </footer>
             </div>
         </BrowserRouter>
