@@ -18,7 +18,7 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     const [moveOpts, setMoveOpts] = React.useState();
     const [capOpts, setCapOpts] = React.useState();
     function handleClick(row, col) {
-        if (isMoveOpt([row, col])) {
+        if (isMoveOrCapOpt([row, col])) {
             movePiece(row, col, getSelectedPiece());
         }
         else if (squares[row][col] != "") {
@@ -33,7 +33,6 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             } else {
                 // nextSquares[i] = 'O';
             }
-            onPlay(nextSquares);
         } else {
             setSelectedSquare(null);
             setMoveOpts(null);
@@ -59,17 +58,56 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         else if (isMoveOpt([row, col])) {
             return "moveOpt";
         }
-        else if (1) {
-            //check capOpts
+        else if (isCapOpt([row, col])) {
+            return "capOpt"
         }
     }
 
     function movePiece(row, col, piece) {
+        const nextSquares = squares.slice();
+        nextSquares[piece.pos[0]][piece.pos[1]] = "";
+        const newPos = [row, col];
+        piece.pos = newPos;
+        nextSquares[row][col] = piece;
+        setSelectedSquare(null);
+        setMoveOpts(null);
+        setCapOpts(null);
 
+        onPlay(nextSquares);
+    }
+
+    function isMoveOrCapOpt(move) {
+        let result = false;
+        if (moveOpts || capOpts) {
+            if (moveOpts) {
+                moveOpts.forEach( opt => {
+                    if (areArraysEqual(opt, move)) {
+                        result = true;
+                    }
+                });
+                if (result == true) {
+                    return true;
+                } 
+            }
+            else {
+                if (capOpts) {
+                    capOpts.forEach( opt => {
+                        if (areArraysEqual(opt, move)) {
+                            result = true;
+                        }
+                    });
+                }
+            }
+            if (result == true) {
+                return true;
+            } 
+            return false;
+        }
+        return false;
     }
 
     function isMoveOpt(move) {
-        if (moveOpts || capOpts) {
+        if (moveOpts) {
             let result = false;
             moveOpts.forEach( opt => {
                 if (areArraysEqual(opt, move)) {
@@ -78,13 +116,6 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             });
             if (result == true) {
                 return true;
-            }
-            else {
-                moveOpts.forEach( opt => {
-                    if (areArraysEqual(opt, move)) {
-                        result = true;
-                    }
-                });
             }
             return false;
         }
