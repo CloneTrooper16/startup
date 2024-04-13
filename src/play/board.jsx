@@ -237,7 +237,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         const hypoSquares = deepCopy(squares);
         hypoSquares[piece.pos[0]][piece.pos[1]] = "";
         // const newPos = [row, col];
-        // hypoSquares[row][col] = piece;
+        hypoSquares[row][col] = piece;
         let result = checkCheck(hypoSquares);
         return result.check;
     }
@@ -368,28 +368,26 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     
     function getPawnMoves(row, col, piece, checkSquares) {
         let result = [];
-        if (!opensCheck(row, col, piece)) {
-            if (piece.color == "w") {
-                if (isEmpty(row - 1, col, checkSquares)) {
-                    if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 1, col, piece))) {
-                        result.push([row - 1, col]);
-                    }
-                    if (row == 6 && isEmpty(row - 2, col, checkSquares)) {
-                        if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 2, col, piece))) {
-                            result.push([row - 2, col]);
-                        }
+        if (piece.color == "w") {
+            if (isEmpty(row - 1, col, checkSquares) && !opensCheck(row - 1, col, piece)) {
+                if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 1, col, piece))) {
+                    result.push([row - 1, col]);
+                }
+                if (row == 6 && isEmpty(row - 2, col, checkSquares) && !opensCheck(row - 2, col, piece)) {
+                    if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 2, col, piece))) {
+                        result.push([row - 2, col]);
                     }
                 }
             }
-            else {
-                if (isEmpty(row + 1, col, checkSquares)) {
-                    if (!isBlackCheck.check || (isBlackCheck.check && stopsCheck(row + 1, col, piece))) {
-                        result.push([row + 1, col]);
-                    }
-                    if (row == 1 && isEmpty(row + 2, col, checkSquares)) {
-                        if (!isBlackCheck.check || (isBlackCheck.check && stopsCheck(row + 2, col, piece))) {
-                            result.push([row + 2, col]);
-                        }
+        }
+        else {
+            if (isEmpty(row + 1, col, checkSquares) && !opensCheck(row + 1, col, piece)) {
+                if (!isBlackCheck.check || (isBlackCheck.check && stopsCheck(row + 1, col, piece))) {
+                    result.push([row + 1, col]);
+                }
+                if (row == 1 && isEmpty(row + 2, col, checkSquares) && !opensCheck(row + 2, col, piece)) {
+                    if (!isBlackCheck.check || (isBlackCheck.check && stopsCheck(row + 2, col, piece))) {
+                        result.push([row + 2, col]);
                     }
                 }
             }
