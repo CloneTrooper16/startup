@@ -360,7 +360,6 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
                     result.push([row - 1, col]);
                 }
                 if (row == 6 && isEmpty(row - 2, col, checkSquares)) {
-                    // console.log("WC:", isWhiteCheck.check);
                     if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 2, col, piece))) {
                         result.push([row - 2, col]);
                     }
@@ -386,10 +385,14 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         let result = [];
         if (piece.color == "w") {
             if (isOpponent(row - 1, col - 1, piece.color, checkSquares)) {
-                result.push([row - 1, col -1]);
+                if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 1, col - 1, piece))) {
+                    result.push([row - 1, col -1]);
+                }
             }
             if (isOpponent(row - 1, col + 1, piece.color, checkSquares)) {
-                result.push([row - 1, col + 1]);
+                if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 1, col + 1, piece))) {
+                    result.push([row - 1, col + 1]);
+                }
             }
             if (row == 3) {
                 //implement en pessant
