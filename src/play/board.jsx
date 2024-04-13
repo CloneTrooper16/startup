@@ -165,6 +165,9 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             result[0] = getPawnMoves(row, col, piece);
             result[1] = getPawnCaps(row, col, piece);
         }
+        else if (piece.type == "r") {
+            result = getRookMoveCaps(row, col, piece);
+        }
         else if (piece.type == "n") {
             result = getKnightMoveCaps(row, col, piece);
         }
@@ -235,7 +238,42 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     }
 
     function getRookMoveCaps(row, col, piece) {
+        let moves = [];
+        let caps = [];
+        let i = 1;
+        while (isEmpty(row + i, col)) {
+            moves.push([row + i, col]);
+            i++;
+        }
+        if (isOpponent(row + i, col, piece.color)) {
+            caps.push([row + i, col]);
+        }
+        i = -1;
+        while (isEmpty(row + i, col)) {
+            moves.push([row + i, col]);
+            i--;
+        }
+        if (isOpponent(row + i, col, piece.color)) {
+            caps.push([row + i, col]);
+        }
+        i = 1;
+        while (isEmpty(row, col + i)) {
+            moves.push([row, col + i]);
+            i++;
+        }
+        if (isOpponent(row, col + i, piece.color)) {
+            caps.push([row, col + i]);
+        }
+        i = -1;
+        while (isEmpty(row, col + i)) {
+            moves.push([row, col + i]);
+            i--;
+        }
+        if (isOpponent(row, col + i, piece.color)) {
+            caps.push([row, col + i]);
+        }
 
+        return [moves, caps];
     }
 
     function getKnightMoveCaps(row, col, piece) {

@@ -71,7 +71,7 @@ export function ChessGame(props) {
                     "", 
                     "", 
                     {color: "w", type: "n", pos: [7,6]}, 
-                    {color: "w", type: "r", pos: [7,0]}
+                    {color: "w", type: "r", pos: [7,7]}
                 ]]]);
     }, []);
 
