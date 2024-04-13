@@ -1,6 +1,7 @@
 import React from 'react';
 import { Board } from './board';
 import { GameEvent, GameNotifier } from './gameNotifier';
+import { PlayerName} from './playerName';
 
 import './chessGame.css';
 
@@ -94,7 +95,9 @@ export function ChessGame(props) {
 
     return (
         <div className='playArea'>
+            <PlayerName userName={"Test"} userIcon={"Test"}/>
             <Board whiteIsNext={whiteIsNext} squares={currentSquares} onPlay={handlePlay} />
+            <PlayerName userName={"Help"} userIcon={"Help"}/>
         </div>
     );
 }

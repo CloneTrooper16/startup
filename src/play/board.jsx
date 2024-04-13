@@ -77,13 +77,6 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         }
     }, [squares]);
 
-    // React.useEffect(() => {
-    //     // const stillCheck = checkCheck();
-    //     // if (stillCheck.length) {
-    //     //     undo();
-    //     // }
-    // }, [movedLast]);
-
     React.useEffect(() => {
         if (selectedSquare) {
             // Calculate moveOpts/capOpts here
