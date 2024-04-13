@@ -62,6 +62,7 @@ export function ChessGame(props) {
 
     function handlePlay(nextSquares) {
         const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
+        GameNotifier.broadcastEvent(userName, GameEvent.historyUpdate, { msg: "test"});
         setHistory(nextHistory);
         setCurrentMove(nextHistory.length - 1);
     }

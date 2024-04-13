@@ -2,6 +2,7 @@ const GameEvent = {
     System: 'system',
     End: 'gameEnd',
     Start: 'gameStart',
+    historyUpdate: 'historyUpdate',
   };
   
   class EventMessage {
