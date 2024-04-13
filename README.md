@@ -60,3 +60,9 @@ My startup will be a simple chess game. This online web application will be acce
 - __Frontend makes WebSocket connection__: You better believe it!
 - __Data sent over a WebSocket connection__: It goes from one client to other, truly incredible!
 - __WebSocket data displayed__: Player Icons update when color is picked and pieces move in real time.
+
+## React Deliverable:
+- __Bundled and Transpiled__: done!
+- __Components__: Login, play, scores, and about are all components!
+- __Router__: router between login and playing components!
+- __Hooks__: UseState and UseEffects implemented on board
