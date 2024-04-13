@@ -26,12 +26,16 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             //     return;
             // }
             const nextSquares = squares.slice();
-            setSelectedSquare([row,col]);
-            //TODO: calculate moveOpts/capOpts here
-            if (whiteIsNext) {
-                // nextSquares[i] = 'X';
-            } else {
-                // nextSquares[i] = 'O';
+            if (whiteIsNext && squares[row][col].color == "w") {
+                setSelectedSquare([row,col]);
+            }
+            else if (!whiteIsNext && squares[row][col].color == "b") {
+                setSelectedSquare([row,col]);
+            }
+            else {
+                setSelectedSquare(null);
+                setMoveOpts(null);
+                setCapOpts(null);
             }
         } else {
             setSelectedSquare(null);
@@ -124,7 +128,7 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     }
 
     function isEmpty(row, col) {
-        if (row < 8 && row > 0 && col < 8 && col > 0) {
+        if (row < 8 && row > -1 && col < 8 && col > -1) {
             if (squares[row][col] == "") {
                 return true;
             }
@@ -133,7 +137,7 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     }
 
     function isOpponent(row, col, myColor) {
-        if (row < 8 && row > 0 && col < 8 && col > 0) {
+        if (row < 8 && row > -1 && col < 8 && col > -1) {
             if (squares[row][col] != "") {
                 if (squares[row][col].color != myColor) {
                     return true;

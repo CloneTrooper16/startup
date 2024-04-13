@@ -23,7 +23,6 @@ export function ChessGame(props) {
   
     function handleGameEvent(event) {
       setEvent([...events, event]);
-      console.log(events.length);
     }
 
     //add sound here?
