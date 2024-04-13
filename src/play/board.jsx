@@ -218,7 +218,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         }
     }
 
-    function stopsCheck(row, col, piece) {
+    function stopsCheck(row, col, piece) { //
         const hypoSquares = deepCopy(squares);
         hypoSquares[piece.pos[0]][piece.pos[1]] = "";
         const newPos = [row, col];
@@ -247,7 +247,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         let result = false;
         checkSquares.forEach( r => {
             r.forEach( square => {
-                if (square != "" && square.color == "b") { //TODO: do i need type = k
+                if (square != "" && square.color == "b") {
                     if(checkAttack([square.pos[0], square.pos[1]], [row, col], square, checkSquares)) {
                         result = true;
                         return true;
@@ -278,17 +278,15 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         //TODO: i belive this needs to work with hypoSquares?
         let result = false;
         let movCaps = [[]];
-        if (piece != undefined && (piece.type != "p")) {
+        if (piece != undefined && piece.type != "p") {
             movCaps = getChecks(rowCol, piece, checkSquares);
         }
         else if (piece != undefined && piece.type == "p") {
-            movCaps[0] = getPawnChecks(rowCol[0], rowCol[1], piece);
-            // console.log(movCaps);
+            movCaps[0] = getPawnChecks(rowCol[0], rowCol[1], piece, checkSquares);
         }
         movCaps.forEach( ar => {
             ar.forEach( m => {
                 if (areArraysEqual(m, attackSquare)) {
-                    // console.log(attackSquare, piece);
                     result = true;
                     return true;
                 }
@@ -332,7 +330,6 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
                 return;
             }
         });
-        console.log(result.pos, color);
         return result;
     }
 
@@ -453,20 +450,20 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         return result;
     }
 
-    function getPawnChecks(row, col, piece) {
+    function getPawnChecks(row, col, piece, checkSquares) {
         let result = [];
         if (piece.color == "w") {
-            if (isOpponent(row - 1, col - 1, piece, squares)) {
+            if (isOpponent(row - 1, col - 1, piece, checkSquares)) {
                 result.push([row - 1, col -1]);
             }
-            if (isOpponent(row - 1, col + 1, piece, squares)) {
+            if (isOpponent(row - 1, col + 1, piece, checkSquares)) {
                 result.push([row - 1, col + 1]);
             }
         } else {
-            if (isOpponent(row + 1, col - 1, piece, squares)) {
+            if (isOpponent(row + 1, col - 1, piece, checkSquares)) {
                 result.push([row + 1, col -1]);
             }
-            if (isOpponent(row + 1, col + 1, piece, squares)) {
+            if (isOpponent(row + 1, col + 1, piece, checkSquares)) {
                 result.push([row + 1, col + 1]);
             }
         }
