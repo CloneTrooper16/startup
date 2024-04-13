@@ -1,5 +1,6 @@
 import React from 'react';
 import { Board } from './board';
+import { GameEvent, GameNotifier } from './gameNotifier';
 
 import './chessGame.css';
 
