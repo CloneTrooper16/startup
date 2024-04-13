@@ -398,12 +398,12 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     function getPawnCaps(row, col, piece, checkSquares) {
         let result = [];
         if (piece.color == "w") {
-            if (isOpponent(row - 1, col - 1, piece.color, checkSquares)) {
+            if (isOpponent(row - 1, col - 1, piece.color, checkSquares) && !opensCheck(row - 1, col - 1, piece)) {
                 if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 1, col - 1, piece))) {
                     result.push([row - 1, col -1]);
                 }
             }
-            if (isOpponent(row - 1, col + 1, piece.color, checkSquares)) {
+            if (isOpponent(row - 1, col + 1, piece.color, checkSquares) && !opensCheck(row - 1, col + 1, piece)) {
                 if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 1, col + 1, piece))) {
                     result.push([row - 1, col + 1]);
                 }
@@ -412,28 +412,36 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
                 //implement en pessant
                 if (movedLast.pos[0] == 3 && (movedLast.pos[1] == col - 1 || movedLast.pos[1] == col + 1) && movedLast.type == "p" && movedLast.color == "b") {
                     if (movedLast.pos[1] == col - 1) {
-                        result.push([row - 1, col - 1]);
+                        if (!opensCheck(row - 1, col - 1, piece)) {
+                            result.push([row - 1, col - 1]);
+                        }
                     }
                     else {
-                        result.push([row - 1, col + 1]);
+                        if (!opensCheck(row - 1, col + 1, piece)) {
+                            result.push([row - 1, col + 1]);
+                        }
                     }
                 }
             }
         } else {
-            if (isOpponent(row + 1, col - 1, piece.color, checkSquares)) {
+            if (isOpponent(row + 1, col - 1, piece.color, checkSquares) && !opensCheck(row + 1, col - 1, piece)) {
                 result.push([row + 1, col -1]);
             }
-            if (isOpponent(row + 1, col + 1, piece.color, checkSquares)) {
+            if (isOpponent(row + 1, col + 1, piece.color, checkSquares) && !opensCheck(row + 1, col + 1, piece)) {
                 result.push([row + 1, col + 1]);
             }
             if (row == 4) {
                 //implement en pessant
                 if (movedLast.pos[0] == 4 && (movedLast.pos[1] == col - 1 || movedLast.pos[1] == col + 1) && movedLast.type == "p" && movedLast.color == "w") {
                     if (movedLast.pos[1] == col - 1) {
-                        result.push([row + 1, col - 1]);
+                        if (!opensCheck(row + 1, col - 1, piece)) {
+                            result.push([row + 1, col - 1]);
+                        }
                     }
                     else {
-                        result.push([row + 1, col + 1]);
+                        if (!opensCheck(row + 1, col + 1, piece)) {
+                            result.push([row + 1, col + 1]);
+                        }
                     }
                 }
             }
