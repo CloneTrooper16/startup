@@ -230,7 +230,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     }
 
     function opensCheck(row, col, piece) {
-        if (isWhiteCheck.check || isBlackCheck.check) {
+        if (piece.type !="k" && (isWhiteCheck.check || isBlackCheck.check)) {
             return false;
         }
         const hypoSquares = deepCopy(squares);
@@ -672,7 +672,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         const moveTypes = [[-1,-1],[0,-1],[1,-1],[-1,1],[0,1],[1,1],[-1,0],[1,0]];
         moveTypes.forEach( m => {
             if (isEmpty(row + m[0], col + m[1], checkSquares)) {
-                if (checkLogic(row + m[1], col + m[1], piece)) {
+                if (checkLogic(row + m[0], col + m[1], piece)) {
                     if (!opensCheck(row + m[0], col + m[1], piece)) {
                         moves.push([row + m[0], col + m[1]]);
                     }
