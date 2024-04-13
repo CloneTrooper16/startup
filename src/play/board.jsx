@@ -17,6 +17,8 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     const [selectedSquare, setSelectedSquare] = React.useState();
     const [moveOpts, setMoveOpts] = React.useState();
     const [capOpts, setCapOpts] = React.useState();
+    const [movedLast, setMovedLast] = React.useState(0);
+
     function handleClick(row, col) {
         if (isMoveOrCapOpt([row, col])) {
             movePiece(row, col, getSelectedPiece());
@@ -72,13 +74,21 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     function movePiece(row, col, piece) {
         const nextSquares = squares.slice();
         nextSquares[piece.pos[0]][piece.pos[1]] = "";
+
+        if (piece.type == "p" && piece.color == "w" && squares[row][col] == "" && col != piece.pos[1]) {
+            nextSquares[row + 1][col] = "";
+        }
+        else if (piece.type == "p" && piece.color == "b" && squares[row][col] == "" && col != piece.pos[1]) {
+            nextSquares[row - 1][col] = "";
+        }
+
         const newPos = [row, col];
         piece.pos = newPos;
         nextSquares[row][col] = piece;
         setSelectedSquare(null);
         setMoveOpts(null);
         setCapOpts(null);
-
+        setMovedLast(piece);
         onPlay(nextSquares);
     }
 
@@ -190,6 +200,14 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             }
             if (row == 3) {
                 //implement en pessant
+                if (movedLast.pos[0] == 3 && (movedLast.pos[1] == col - 1 || movedLast.pos[1] == col + 1) && movedLast.type == "p" && movedLast.color == "b") {
+                    if (movedLast.pos[1] == col - 1) {
+                        result.push([row - 1, col - 1]);
+                    }
+                    else {
+                        result.push([row - 1, col + 1]);
+                    }
+                }
             }
         } else {
             if (isOpponent(row + 1, col - 1, piece.color)) {
@@ -200,6 +218,14 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             }
             if (row == 4) {
                 //implement en pessant
+                if (movedLast.pos[0] == 4 && (movedLast.pos[1] == col - 1 || movedLast.pos[1] == col + 1) && movedLast.type == "p" && movedLast.color == "w") {
+                    if (movedLast.pos[1] == col - 1) {
+                        result.push([row + 1, col - 1]);
+                    }
+                    else {
+                        result.push([row + 1, col + 1]);
+                    }
+                }
             }
         }
         return result;
