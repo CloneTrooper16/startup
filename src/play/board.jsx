@@ -61,7 +61,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
             }
         }
         //check for mate
-        if (getAllMoves(whiteIsNext ? "w" : "b").length == 0, squares) {
+        if (getAllMoves(whiteIsNext ? "w" : "b", squares).length == 0) {
             if (isWhiteCheck.check) {
                 console.log("white wins!");
                 setWinner("White");
