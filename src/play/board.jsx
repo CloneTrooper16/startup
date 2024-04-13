@@ -5,7 +5,6 @@ import './board.css';
 
 function Square({ lightDark, value, onSquareClick, status }) {
     const squareClass = `${lightDark} ${status}`;
-    //TODO: change selected to status? have board figureout moves and captures?
     return (
         <div className={squareClass} onClick={onSquareClick}>
             <Piece color={value.color} type={value.type} />
@@ -18,8 +17,8 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     const [moveOpts, setMoveOpts] = React.useState();
     const [capOpts, setCapOpts] = React.useState();
     const [movedLast, setMovedLast] = React.useState(0);
-    const [isWhiteCheck, setWhiteCheck] = React.useState(false);
-    const [isBlackCheck, setBlackCheck] = React.useState(false);
+    const [isWhiteCheck, setWhiteCheck] = React.useState({check: false, pos: []});
+    const [isBlackCheck, setBlackCheck] = React.useState({check: false, pos: []});
 
     function handleClick(row, col) {
         if (isMoveOrCapOpt([row, col])) {
@@ -49,14 +48,15 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     }
 
     React.useEffect(() => {
-        const check = checkCheck();
+        const check = checkCheck(squares);
+        // console.log("c:", check)
         if (check) {
-            if (whiteIsNext) {
+            if (!whiteIsNext) {
                 setBlackCheck(check);
             } else {
                 setWhiteCheck(check);
             }
-            console.log(check);
+            // console.log(check);
         }
     }, [movedLast]);
 
@@ -71,7 +71,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     React.useEffect(() => {
         if (selectedSquare) {
             // Calculate moveOpts/capOpts here
-            let opts = getMoves(selectedSquare, getSelectedPiece());
+            let opts = getMoves(selectedSquare, getSelectedPiece(), squares);
             setMoveOpts(opts[0]);
             setCapOpts(opts[1]);
         }
@@ -159,7 +159,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     }
 
     function inCheck(move) {
-        if (areArraysEqual(move, isWhiteCheck) || areArraysEqual(move, isBlackCheck)) {
+        if (areArraysEqual(move, isWhiteCheck.pos) || areArraysEqual(move, isBlackCheck.pos)) {
             return true;
         }
         return false;
@@ -174,19 +174,33 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         return true;
     }
 
-    function isEmpty(row, col) {
+    function deepCopy(array) {
+        let copy = [];
+        for (let item of array) {
+            if (Array.isArray(item)) {
+                // If item is an array, recursively copy it
+                copy.push(deepCopy(item));
+            } else {
+                // If item is primitive, just copy it
+                copy.push(item);
+            }
+        }
+        return copy;
+    }
+
+    function isEmpty(row, col, checkSquares) {
         if (row < 8 && row > -1 && col < 8 && col > -1) {
-            if (squares[row][col] == "") {
+            if (checkSquares[row][col] == "") {
                 return true;
             }
         }
         return false;
     }
 
-    function isOpponent(row, col, myColor) {
+    function isOpponent(row, col, myColor, checkSquares) {
         if (row < 8 && row > -1 && col < 8 && col > -1) {
-            if (squares[row][col] != "") {
-                if (squares[row][col].color != myColor) {
+            if (checkSquares[row][col] != "") {
+                if (checkSquares[row][col].color != myColor) {
                     return true;
                 }
             }
@@ -194,26 +208,32 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         return false;
     }
 
-    function isSafe(row, col, piece) {
+    function isSafe(row, col, piece, checkSquares) {
         //TODO: change to deal with defended pieces? 
         //works for now with moves but not captures
         if (piece.color == "w") {
-            return !checkBlackAttacks(row, col);
+            return !checkBlackAttacks(row, col, checkSquares);
         } else {
-            return !checkWhiteAttacks(row, col);
+            return !checkWhiteAttacks(row, col, checkSquares);
         }
     }
 
-    function stopsCheck() {
-
+    function stopsCheck(row, col, piece) {
+        const hypoSquares = deepCopy(squares);
+        hypoSquares[piece.pos[0]][piece.pos[1]] = "";
+        const newPos = [row, col];
+        hypoSquares[row][col] = piece;
+        // console.log("chekingTests",checkCheck(hypoSquares));
+        let result = checkCheck(hypoSquares);
+        return !result.check;
     }
 
-    function checkBlackAttacks(row, col) {
+    function checkBlackAttacks(row, col, checkSquares) {
         let result = false;
-        squares.forEach( r => {
+        checkSquares.forEach( r => {
             r.forEach( square => {
                 if (square != "" && square.color == "b" && square.type != "k") {
-                    if(checkAttack([square.pos[0], square.pos[1]], [row, col], square)) {
+                    if(checkAttack([square.pos[0], square.pos[1]], [row, col], square, checkSquares)) {
                         result = true;
                         return true;
                     }
@@ -223,12 +243,12 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         return result;
     }
 
-    function checkWhiteAttacks(row, col) {
+    function checkWhiteAttacks(row, col, checkSquares) {
         let result = false;
-        squares.forEach( r => {
+        checkSquares.forEach( r => {
             r.forEach( square => {
                 if (square != "" && square.color == "w" && square.type != "k") {
-                    if (checkAttack([square.pos[0], square.pos[1]], [row, col], square)) {
+                    if (checkAttack([square.pos[0], square.pos[1]], [row, col], square, checkSquares)) {
                         result = true;
                         return true;
                     }
@@ -238,11 +258,13 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         return result;
     }
 
-    function checkAttack(rowCol, attackSquare, piece) {
+    function checkAttack(rowCol, attackSquare, piece, checkSquares) {
+
+        //TODO: i belive this needs to work with hypoSquares?
         let result = false;
         let movCaps = [];
         if (piece != undefined && piece.type != "p") {
-            movCaps = getMoves(rowCol, piece);
+            movCaps = getMoves(rowCol, piece, checkSquares);
         }
         else if (piece != undefined && piece.type == "p") {
             movCaps[0] = getPawnChecks(rowCol[0], rowCol[1], piece);
@@ -266,29 +288,31 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         return result;
     }
 
-    function checkCheck() {
-        let result = [];
+    function checkCheck(checkSquares) {
+        let result = {check: false, pos: []};
         if (!whiteIsNext) {
             //see if black is now in check
-            const blackKing = getKing("b");
+            const blackKing = getKing("b", checkSquares);
             // result = !isSafe(blackKing.pos[0], blackKing.pos[1], blackKing);
-            if (!isSafe(blackKing.pos[0], blackKing.pos[1], blackKing)) {
-                result = blackKing.pos;
+            if (!isSafe(blackKing.pos[0], blackKing.pos[1], blackKing, checkSquares)) {
+                result.pos = blackKing.pos;
+                result.check = true;
             }
         } else {
             //see if white is now in check
-            const whiteKing = getKing("w");
+            const whiteKing = getKing("w", checkSquares);
             // result = !isSafe(whiteKing.pos[0], whiteKing.pos[1], whiteKing);
-            if (!isSafe(whiteKing.pos[0], whiteKing.pos[1], whiteKing)) {
-                result = whiteKing.pos;
+            if (!isSafe(whiteKing.pos[0], whiteKing.pos[1], whiteKing, checkSquares)) {
+                result.pos = whiteKing.pos;
+                result.check = true;
             }
         }
         return result;
     }
 
-    function getKing(color) {
+    function getKing(color, checkSquares) {
         let result = "";
-        squares.forEach( r => {
+        checkSquares.forEach( r => {
             r.forEach( s => {
                 if (s != "" && s.type == "k" && s.color == color) {
                     result = s;
@@ -302,60 +326,69 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         return result;
     }
     
-    function getMoves(rowCol, piece) {
+    function getMoves(rowCol, piece, checkSquares) {
         const row = rowCol[0];
         const col = rowCol[1];
         let result = [];
         if (piece.type == "p") {
-            result[0] = getPawnMoves(row, col, piece);
-            result[1] = getPawnCaps(row, col, piece);
+            result[0] = getPawnMoves(row, col, piece, checkSquares);
+            result[1] = getPawnCaps(row, col, piece, checkSquares);
         }
         else if (piece.type == "r") {
-            result = getRookMoveCaps(row, col, piece);
+            result = getRookMoveCaps(row, col, piece, checkSquares);
         }
         else if (piece.type == "n") {
-            result = getKnightMoveCaps(row, col, piece);
+            result = getKnightMoveCaps(row, col, piece, checkSquares);
         }
         else if (piece.type == "b") {
-            result = getBishopMoveCaps(row, col, piece);
+            result = getBishopMoveCaps(row, col, piece, checkSquares);
         }
         else if (piece.type == "q") {
-            result = getQueenMoveCaps(row, col, piece);
+            result = getQueenMoveCaps(row, col, piece, checkSquares);
         }
         else if (piece.type == "k") {
-            result = getKingMoveCaps(row, col, piece);
+            result = getKingMoveCaps(row, col, piece, checkSquares);
         }
         return result;
     }
     
-    function getPawnMoves(row, col, piece) {
+    function getPawnMoves(row, col, piece, checkSquares) {
         let result = [];
         if (piece.color == "w") {
-            if (isEmpty(row - 1, col)) {
-                result.push([row - 1, col]);
-                if (row == 6 && isEmpty(row - 2, col)) {
-                    result.push([row - 2, col]);
+            if (isEmpty(row - 1, col, checkSquares)) {
+                if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 1, col, piece))) {
+                    result.push([row - 1, col]);
+                }
+                if (row == 6 && isEmpty(row - 2, col, checkSquares)) {
+                    // console.log("WC:", isWhiteCheck.check);
+                    if (!isWhiteCheck.check || (isWhiteCheck.check && stopsCheck(row - 2, col, piece))) {
+                        result.push([row - 2, col]);
+                    }
                 }
             }
         }
         else {
-            if (isEmpty(row + 1, col)) {
-                result.push([row + 1, col]);
-                if (row == 1 && isEmpty(row + 2, col)) {
-                    result.push([row + 2, col]);
+            if (isEmpty(row + 1, col, checkSquares)) {
+                if (!isBlackCheck.check || (isBlackCheck.check && stopsCheck(row + 1, col, piece))) {
+                    result.push([row + 1, col]);
+                }
+                if (row == 1 && isEmpty(row + 2, col, checkSquares)) {
+                    if (!isBlackCheck.check || (isBlackCheck.check && stopsCheck(row + 2, col, piece))) {
+                        result.push([row + 2, col]);
+                    }
                 }
             }
         }
         return result;
     }
 
-    function getPawnCaps(row, col, piece) {
+    function getPawnCaps(row, col, piece, checkSquares) {
         let result = [];
         if (piece.color == "w") {
-            if (isOpponent(row - 1, col - 1, piece.color)) {
+            if (isOpponent(row - 1, col - 1, piece.color, checkSquares)) {
                 result.push([row - 1, col -1]);
             }
-            if (isOpponent(row - 1, col + 1, piece.color)) {
+            if (isOpponent(row - 1, col + 1, piece.color, checkSquares)) {
                 result.push([row - 1, col + 1]);
             }
             if (row == 3) {
@@ -370,10 +403,10 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
                 }
             }
         } else {
-            if (isOpponent(row + 1, col - 1, piece.color)) {
+            if (isOpponent(row + 1, col - 1, piece.color, checkSquares)) {
                 result.push([row + 1, col -1]);
             }
-            if (isOpponent(row + 1, col + 1, piece.color)) {
+            if (isOpponent(row + 1, col + 1, piece.color, checkSquares)) {
                 result.push([row + 1, col + 1]);
             }
             if (row == 4) {
@@ -394,73 +427,73 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     function getPawnChecks(row, col, piece) {
         let result = [];
         if (piece.color == "w") {
-            if (isEmpty(row - 1, col - 1)) {
+            if (isEmpty(row - 1, col - 1, squares)) {
                 result.push([row - 1, col -1]);
             }
-            if (isEmpty(row - 1, col + 1)) {
+            if (isEmpty(row - 1, col + 1, squares)) {
                 result.push([row - 1, col + 1]);
             }
         } else {
-            if (isEmpty(row + 1, col - 1)) {
+            if (isEmpty(row + 1, col - 1, squares)) {
                 result.push([row + 1, col -1]);
             }
-            if (isEmpty(row + 1, col + 1)) {
+            if (isEmpty(row + 1, col + 1, squares)) {
                 result.push([row + 1, col + 1]);
             }
         }
         return result;
     }
 
-    function getRookMoveCaps(row, col, piece) {
+    function getRookMoveCaps(row, col, piece, checkSquares) {
         let moves = [];
         let caps = [];
         let i = 1;
-        while (isEmpty(row + i, col)) {
+        while (isEmpty(row + i, col, checkSquares)) {
             moves.push([row + i, col]);
             i++;
         }
-        if (isOpponent(row + i, col, piece.color)) {
+        if (isOpponent(row + i, col, piece.color, checkSquares)) {
             caps.push([row + i, col]);
         }
         i = -1;
-        while (isEmpty(row + i, col)) {
+        while (isEmpty(row + i, col, checkSquares)) {
             moves.push([row + i, col]);
             i--;
         }
-        if (isOpponent(row + i, col, piece.color)) {
+        if (isOpponent(row + i, col, piece.color, checkSquares)) {
             caps.push([row + i, col]);
         }
         i = 1;
-        while (isEmpty(row, col + i)) {
+        while (isEmpty(row, col + i, checkSquares)) {
             moves.push([row, col + i]);
             i++;
         }
-        if (isOpponent(row, col + i, piece.color)) {
+        if (isOpponent(row, col + i, piece.color, checkSquares)) {
             caps.push([row, col + i]);
         }
         i = -1;
-        while (isEmpty(row, col + i)) {
+        while (isEmpty(row, col + i, checkSquares)) {
             moves.push([row, col + i]);
             i--;
         }
-        if (isOpponent(row, col + i, piece.color)) {
+        if (isOpponent(row, col + i, piece.color, checkSquares)) {
             caps.push([row, col + i]);
         }
 
         return [moves, caps];
     }
 
-    function getKnightMoveCaps(row, col, piece) {
+    function getKnightMoveCaps(row, col, piece, checkSquares) {
         let moves = [];
         let caps = [];
         const moveTypes = [[2,-1],[2,1],[1,2],[-1,2],[-2,-1],[-2,1],[-1,-2],[1,-2]];
         moveTypes.forEach(m => {
             // let moveOpt = [row + m[0], col + m[1]];
-            if (isEmpty(row + m[0], col + m[1])) {
+            if (isEmpty(row + m[0], col + m[1], checkSquares)) {
                 moves.push([row + m[0], col + m[1]]);
             }
             else {
-                if (isOpponent(row + m[0], col + m[1], piece.color)) {
+                if (isOpponent(row + m[0], col + m[1], piece.color, checkSquares)) {
                     caps.push([row + m[0], col + m[1]]);
                 }
             }
@@ -468,56 +501,56 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         return [moves, caps];
     }
 
-    function getBishopMoveCaps(row, col, piece) {
+    function getBishopMoveCaps(row, col, piece, checkSquares) {
         let moves = [];
         let caps = [];
         let i = 1;
         let j = 1;
-        while (isEmpty(row + i, col + j)) {
+        while (isEmpty(row + i, col + j, checkSquares)) {
             moves.push([row + i, col + j]);
             i++;
             j++;
         }
-        if (isOpponent(row + i, col + j, piece.color)) {
+        if (isOpponent(row + i, col + j, piece.color, checkSquares)) {
             caps.push([row + i, col + j]);
         }
         i = -1;
         j = 1;
-        while (isEmpty(row + i, col + j)) {
+        while (isEmpty(row + i, col + j, checkSquares)) {
             moves.push([row + i, col + j]);
             i--;
             j++;
         }
-        if (isOpponent(row + i, col + j, piece.color)) {
+        if (isOpponent(row + i, col + j, piece.color, checkSquares)) {
             caps.push([row + i, col + j]);
         }
         i = -1;
         j = -1;
-        while (isEmpty(row + i, col + j)) {
+        while (isEmpty(row + i, col + j, checkSquares)) {
             moves.push([row + i, col + j]);
             i--;
             j--;
         }
-        if (isOpponent(row + i, col + j, piece.color)) {
+        if (isOpponent(row + i, col + j, piece.color, checkSquares)) {
             caps.push([row + i, col + j]);
         }
         i = 1;
         j = -1;
-        while (isEmpty(row + i, col + j)) {
+        while (isEmpty(row + i, col + j, checkSquares)) {
             moves.push([row + i, col + j]);
             i++;
             j--;
         }
-        if (isOpponent(row + i, col + j, piece.color)) {
+        if (isOpponent(row + i, col + j, piece.color, checkSquares)) {
             caps.push([row + i, col + j]);
         }
 
         return [moves, caps];
     }
 
-    function getQueenMoveCaps(row, col, piece) {
-        let rookMoves = getRookMoveCaps(row, col, piece);
-        let bishopMoves = getBishopMoveCaps(row, col, piece);
+    function getQueenMoveCaps(row, col, piece, checkSquares) {
+        let rookMoves = getRookMoveCaps(row, col, piece, checkSquares);
+        let bishopMoves = getBishopMoveCaps(row, col, piece, checkSquares);
         rookMoves[0].forEach( m => {
             bishopMoves[0].push(m);
         });
@@ -527,12 +560,12 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         return [bishopMoves[0], bishopMoves[1]];
     }
 
-    function getKingMoveCaps(row, col, piece) {
+    function getKingMoveCaps(row, col, piece, checkSquares) {
         let moves = [];
         let caps = [];
         const moveTypes = [[-1,-1],[0,-1],[1,-1],[-1,1],[0,1],[1,1],[-1,0],[1,0]];
         moveTypes.forEach( m => {
-            if (isEmpty(row + m[0], col + m[1]) && isSafe(row + m[0], col + m[1], piece)) {
+            if (isEmpty(row + m[0], col + m[1], checkSquares) && isSafe(row + m[0], col + m[1], piece, squares)) {
                 moves.push([row + m[0], col + m[1]]);
             }
         });
