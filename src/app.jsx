@@ -50,7 +50,14 @@ function App() {
                             </menu>
                         </nav>
                     </div>
-                    
+                    {authState === AuthState.Authenticated && (
+                        <div className="profile">
+                            <span className="userName">
+                                {userName}
+                            </span>
+                            <img className="profileIcon" src={"https://robohash.org/" + userName + ".png"} />
+                        </div>
+                    )}
                 </header>
 
                 <Routes>
