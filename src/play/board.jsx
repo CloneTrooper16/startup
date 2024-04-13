@@ -247,7 +247,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         let result = false;
         checkSquares.forEach( r => {
             r.forEach( square => {
-                if (square != "" && square.color == "b" && square.type != "k") {
+                if (square != "" && square.color == "b") { //TODO: do i need type = k
                     if(checkAttack([square.pos[0], square.pos[1]], [row, col], square, checkSquares)) {
                         result = true;
                         return true;
@@ -262,7 +262,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         let result = false;
         checkSquares.forEach( r => {
             r.forEach( square => {
-                if (square != "" && square.color == "w" && square.type != "k") {
+                if (square != "" && square.color == "w") {
                     if (checkAttack([square.pos[0], square.pos[1]], [row, col], square, checkSquares)) {
                         result = true;
                         return true;
@@ -277,7 +277,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
 
         //TODO: i belive this needs to work with hypoSquares?
         let result = false;
-        let movCaps = [];
+        let movCaps = [[]];
         if (piece != undefined && (piece.type != "p")) {
             movCaps = getChecks(rowCol, piece, checkSquares);
         }
@@ -285,23 +285,15 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
             movCaps[0] = getPawnChecks(rowCol[0], rowCol[1], piece);
             // console.log(movCaps);
         }
-        if (movCaps.length) {
-            movCaps[0].forEach( m => {
+        movCaps.forEach( ar => {
+            ar.forEach( m => {
                 if (areArraysEqual(m, attackSquare)) {
                     // console.log(attackSquare, piece);
                     result = true;
                     return true;
                 }
             });
-        }
-        if (movCaps.length > 1) {
-            movCaps[1].forEach( m => {
-                if (areArraysEqual(m, attackSquare)) {
-                    result = true;
-                    return true;
-                }
-            });
-        }
+        })
         return result;
     }
 
@@ -342,6 +334,14 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         });
         console.log(result.pos, color);
         return result;
+    }
+
+    function checkLogic(row, col, piece) {
+        if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col, piece))
+                                                     || (isBlackCheck.check && stopsCheck(row, col, piece))) {
+                return true;
+            }
+        return false;
     }
     
     function getMoves(rowCol, piece, checkSquares) {
@@ -456,17 +456,17 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     function getPawnChecks(row, col, piece) {
         let result = [];
         if (piece.color == "w") {
-            if (isEmpty(row - 1, col - 1, squares)) {
+            if (isOpponent(row - 1, col - 1, piece, squares)) {
                 result.push([row - 1, col -1]);
             }
-            if (isEmpty(row - 1, col + 1, squares)) {
+            if (isOpponent(row - 1, col + 1, piece, squares)) {
                 result.push([row - 1, col + 1]);
             }
         } else {
-            if (isEmpty(row + 1, col - 1, squares)) {
+            if (isOpponent(row + 1, col - 1, piece, squares)) {
                 result.push([row + 1, col -1]);
             }
-            if (isEmpty(row + 1, col + 1, squares)) {
+            if (isOpponent(row + 1, col + 1, piece, squares)) {
                 result.push([row + 1, col + 1]);
             }
         }
@@ -478,8 +478,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         let caps = [];
         let i = 1;
         while (isEmpty(row + i, col, checkSquares)) {
-            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
-                                                                || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+            if (checkLogic(row + i, col, checkSquares)) {
                 if (!opensCheck(row + i, col, piece)) {
                     moves.push([row + i, col]);
                 }
@@ -487,8 +486,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
             i++;
         }
         if (isOpponent(row + i, col, piece.color, checkSquares)) {
-            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
-                                                                || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+            if (checkLogic(row + i, col, piece)) {
                 if (!opensCheck(row + i, col, piece)) {
                     caps.push([row + i, col]);
                 }
@@ -496,8 +494,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         }
         i = -1;
         while (isEmpty(row + i, col, checkSquares)) {
-            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
-                                                                || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+            if (checkLogic(row + i, col, piece)) {
                 if (!opensCheck(row + i, col, piece)) {
                     moves.push([row + i, col]);
                 }
@@ -505,8 +502,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
             i--;
         }
         if (isOpponent(row + i, col, piece.color, checkSquares)) {
-            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
-                                                                || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+            if (checkLogic(row + i, col, piece)) {
                 if (!opensCheck(row + i, col, piece)) {
                     caps.push([row + i, col]);
                 }
@@ -514,8 +510,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         }
         i = 1;
         while (isEmpty(row, col + i, checkSquares)) {
-            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
-                                                                || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+            if (checkLogic(row, col + i, piece)) {
                 if (!opensCheck(row, col + i, piece)) {
                     moves.push([row, col + i]);
                 }
@@ -523,8 +518,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
             i++;
         }
         if (isOpponent(row, col + i, piece.color, checkSquares)) {
-            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
-                                                                || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+            if (checkLogic(row, col + i, piece)) {
                 if (!opensCheck(row, col + i, piece)) {
                     caps.push([row, col + i]);
                 }
@@ -532,8 +526,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         }
         i = -1;
         while (isEmpty(row, col + i, checkSquares)) {
-            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
-                                                                || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+            if (checkLogic(row, col + i, piece)) {
                 if (!opensCheck(row, col + i, piece)) {
                     moves.push([row, col + i]);
                 }
@@ -541,8 +534,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
             i--;
         }
         if (isOpponent(row, col + i, piece.color, checkSquares)) {
-            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
-                                                                || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+            if (checkLogic(row, col + i, piece)) {
                 if (!opensCheck(row, col + i, piece)) {
                     caps.push([row, col + i]);
                 }
@@ -683,16 +675,14 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         const moveTypes = [[-1,-1],[0,-1],[1,-1],[-1,1],[0,1],[1,1],[-1,0],[1,0]];
         moveTypes.forEach( m => {
             if (isEmpty(row + m[0], col + m[1], checkSquares)) {
-                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + m[0], col + m[1], piece))
-                                                                 || (isBlackCheck.check && stopsCheck(row + m[1], col + m[1], piece))) {
+                if (checkLogic(row + m[1], col + m[1], piece)) {
                     if (!opensCheck(row + m[0], col + m[1], piece)) {
                         moves.push([row + m[0], col + m[1]]);
                     }
                 }
             } else {
                 if (isOpponent(row + m[0], col + m[1], piece.color, checkSquares)) {
-                    if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + m[0], col + m[1], piece))
-                                                                     || (isBlackCheck.check && stopsCheck(row + m[0], col + m[1], piece))) {
+                    if (checkLogic(row + m[0], col + m[1], piece)) {
                         if (!opensCheck(row + m[0], col + m[1], piece)) {
                             caps.push([row + m[0], col + m[1]]);
                         }
