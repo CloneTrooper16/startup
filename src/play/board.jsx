@@ -48,6 +48,11 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     }
 
     React.useEffect(() => {
+        const check = checkCheck(whiteIsNext);
+        setCheck(check);
+    }, [movedLast]);
+
+    React.useEffect(() => {
         if (selectedSquare) {
             // Calculate moveOpts/capOpts here
             let opts = getMoves(selectedSquare, getSelectedPiece());
@@ -68,7 +73,10 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             return "moveOpt";
         }
         else if (isCapOpt([row, col])) {
-            return "capOpt"
+            return "capOpt";
+        }
+        else if (inCheck([row, col])) {
+            return "check";
         }
     }
 
@@ -125,6 +133,13 @@ export function Board({ whiteIsNext, squares, onPlay }) {
                 return true;
             }
             return false;
+        }
+        return false;
+    }
+
+    function inCheck(move) {
+        if (areArraysEqual(move, isCheck)) {
+            return true;
         }
         return false;
     }
@@ -206,7 +221,6 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         }
         else if (piece != undefined && piece.type == "p") {
             movCaps[0] = getPawnChecks(rowCol[0], rowCol[1], piece);
-            console.log("mC:", movCaps);
         }
         if (movCaps.length) {
             movCaps[0].forEach( m => {
@@ -215,14 +229,51 @@ export function Board({ whiteIsNext, squares, onPlay }) {
                     return true;
                 }
             });
-            // } else {
-            //     movCaps[0].forEach( m => {
-            //         if (areArraysEqual(m, attackSquare)) {
-            //             result = true;
-            //             return true;
-            //         }
-            //     });
         }
+        if (movCaps.length > 1) {
+            movCaps[1].forEach( m => {
+                if (areArraysEqual(m, attackSquare)) {
+                    result = true;
+                    return true;
+                }
+            });
+        }
+        return result;
+    }
+
+    function checkCheck(whiteIsNext) {
+        let result = [];
+        if (!whiteIsNext) {
+            //see if black is now in check
+            const blackKing = getKing("b");
+            // result = !isSafe(blackKing.pos[0], blackKing.pos[1], blackKing);
+            if (!isSafe(blackKing.pos[0], blackKing.pos[1], blackKing)) {
+                result = blackKing.pos;
+            }
+        } else {
+            //see if white is now in check
+            const whiteKing = getKing("w");
+            // result = !isSafe(whiteKing.pos[0], whiteKing.pos[1], whiteKing);
+            if (!isSafe(whiteKing.pos[0], whiteKing.pos[1], whiteKing)) {
+                result = whiteKing.pos;
+            }
+        }
+        return result;
+    }
+
+    function getKing(color) {
+        let result = "";
+        squares.forEach( r => {
+            r.forEach( s => {
+                if (s != "" && s.type == "k" && s.color == color) {
+                    result = s;
+                    return;
+                }
+            });
+            if (result != "") {
+                return;
+            }
+        });
         return result;
     }
     
