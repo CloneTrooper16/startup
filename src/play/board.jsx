@@ -113,7 +113,7 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     }
 
     function movePiece(row, col, piece) {
-        const nextSquares = squares.slice();
+        const nextSquares = deepCopy(squares);
         nextSquares[piece.pos[0]][piece.pos[1]] = "";
 
         //en pessant
@@ -127,6 +127,12 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         const newPos = [row, col];
         piece.pos = newPos;
         nextSquares[row][col] = piece;
+
+        if (piece.type == "p" && (row == 0 || row == 7)) {
+            piece.type = "q";
+            //change to function for more options
+        }
+
         setSelectedSquare(null);
         setMoveOpts(null);
         setCapOpts(null);
