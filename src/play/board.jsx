@@ -472,64 +472,79 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     function getRookMoveCaps(row, col, piece, checkSquares) {
         let moves = [];
         let caps = [];
-        if (!opensCheck(row, col, piece)) {
-            let i = 1;
-            while (isEmpty(row + i, col, checkSquares)) {
-                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
-                                                                 || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+        let i = 1;
+        while (isEmpty(row + i, col, checkSquares)) {
+            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
+                                                                || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+                if (!opensCheck(row + i, col, piece)) {
                     moves.push([row + i, col]);
                 }
-                i++;
             }
-            if (isOpponent(row + i, col, piece.color, checkSquares)) {
-                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
-                                                                 || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+            i++;
+        }
+        if (isOpponent(row + i, col, piece.color, checkSquares)) {
+            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
+                                                                || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+                if (!opensCheck(row + i, col, piece)) {
                     caps.push([row + i, col]);
                 }
             }
-            i = -1;
-            while (isEmpty(row + i, col, checkSquares)) {
-                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
-                                                                 || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+        }
+        i = -1;
+        while (isEmpty(row + i, col, checkSquares)) {
+            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
+                                                                || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+                if (!opensCheck(row + i, col, piece)) {
                     moves.push([row + i, col]);
                 }
-                i--;
             }
-            if (isOpponent(row + i, col, piece.color, checkSquares)) {
-                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
-                                                                 || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+            i--;
+        }
+        if (isOpponent(row + i, col, piece.color, checkSquares)) {
+            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + i, col, piece))
+                                                                || (isBlackCheck.check && stopsCheck(row + i, col, piece))) {
+                if (!opensCheck(row + i, col, piece)) {
                     caps.push([row + i, col]);
                 }
             }
-            i = 1;
-            while (isEmpty(row, col + i, checkSquares)) {
-                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
-                                                                 || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+        }
+        i = 1;
+        while (isEmpty(row, col + i, checkSquares)) {
+            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
+                                                                || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+                if (!opensCheck(row, col + i, piece)) {
                     moves.push([row, col + i]);
                 }
-                i++;
             }
-            if (isOpponent(row, col + i, piece.color, checkSquares)) {
-                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
-                                                                 || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
-                    caps.push([row, col + i]);
-                }
-            }
-            i = -1;
-            while (isEmpty(row, col + i, checkSquares)) {
-                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
-                                                                 || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
-                    moves.push([row, col + i]);
-                }
-                i--;
-            }
-            if (isOpponent(row, col + i, piece.color, checkSquares)) {
-                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
-                                                                 || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+            i++;
+        }
+        if (isOpponent(row, col + i, piece.color, checkSquares)) {
+            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
+                                                                || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+                if (!opensCheck(row, col + i, piece)) {
                     caps.push([row, col + i]);
                 }
             }
         }
+        i = -1;
+        while (isEmpty(row, col + i, checkSquares)) {
+            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
+                                                                || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+                if (!opensCheck(row, col + i, piece)) {
+                    moves.push([row, col + i]);
+                }
+            }
+            i--;
+        }
+        if (isOpponent(row, col + i, piece.color, checkSquares)) {
+            if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row, col + i, piece))
+                                                                || (isBlackCheck.check && stopsCheck(row, col + i, piece))) {
+                if (!opensCheck(row, col + i, piece)) {
+                    caps.push([row, col + i]);
+                }
+            }
+        }
+        
         return [moves, caps];
     }
 
