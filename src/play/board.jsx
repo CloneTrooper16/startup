@@ -18,6 +18,7 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     const [moveOpts, setMoveOpts] = React.useState();
     const [capOpts, setCapOpts] = React.useState();
     const [movedLast, setMovedLast] = React.useState(0);
+    const [isCheck, setCheck] = React.useState(false);
 
     function handleClick(row, col) {
         if (isMoveOrCapOpt([row, col])) {
@@ -156,6 +157,74 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         }
         return false;
     }
+
+    function isSafe(row, col, piece) {
+        //TODO: change to deal with defended pieces? 
+        //works for now with moves but not captures
+        if (piece.color == "w") {
+            return !checkBlackAttacks(row, col);
+        } else {
+            return !checkWhiteAttacks(row, col);
+        }
+    }
+
+    function checkBlackAttacks(row, col) {
+        let result = false;
+        squares.forEach( r => {
+            r.forEach( square => {
+                if (square != "" && square.color == "b" && square.type != "k") {
+                    if(checkAttack([square.pos[0], square.pos[1]], [row, col], square)) {
+                        result = true;
+                        return true;
+                    }
+                }
+            });
+        });
+        return result;
+    }
+
+    function checkWhiteAttacks(row, col) {
+        let result = false;
+        squares.forEach( r => {
+            r.forEach( square => {
+                if (square != "" && square.color == "w" && square.type != "k") {
+                    if (checkAttack([square.pos[0], square.pos[1]], [row, col], square)) {
+                        result = true;
+                        return true;
+                    }
+                }
+            });
+        });
+        return result;
+    }
+
+    function checkAttack(rowCol, attackSquare, piece) {
+        let result = false;
+        let movCaps = [];
+        if (piece != undefined && piece.type != "p") {
+            movCaps = getMoves(rowCol, piece);
+        }
+        else if (piece != undefined && piece.type == "p") {
+            movCaps[0] = getPawnChecks(rowCol[0], rowCol[1], piece);
+            console.log("mC:", movCaps);
+        }
+        if (movCaps.length) {
+            movCaps[0].forEach( m => {
+                if (areArraysEqual(m, attackSquare)) {
+                    result = true;
+                    return true;
+                }
+            });
+            // } else {
+            //     movCaps[0].forEach( m => {
+            //         if (areArraysEqual(m, attackSquare)) {
+            //             result = true;
+            //             return true;
+            //         }
+            //     });
+        }
+        return result;
+    }
     
     function getMoves(rowCol, piece) {
         const row = rowCol[0];
@@ -176,6 +245,9 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         }
         else if (piece.type == "q") {
             result = getQueenMoveCaps(row, col, piece);
+        }
+        else if (piece.type == "k") {
+            result = getKingMoveCaps(row, col, piece);
         }
         return result;
     }
@@ -243,6 +315,26 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         return result;
     }
 
+    function getPawnChecks(row, col, piece) {
+        let result = [];
+        if (piece.color == "w") {
+            if (isEmpty(row - 1, col - 1)) {
+                result.push([row - 1, col -1]);
+            }
+            if (isEmpty(row - 1, col + 1)) {
+                result.push([row - 1, col + 1]);
+            }
+        } else {
+            if (isEmpty(row + 1, col - 1)) {
+                result.push([row + 1, col -1]);
+            }
+            if (isEmpty(row + 1, col + 1)) {
+                result.push([row + 1, col + 1]);
+            }
+        }
+        return result;
+    }
+
     function getRookMoveCaps(row, col, piece) {
         let moves = [];
         let caps = [];
@@ -287,7 +379,7 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         let caps = [];
         const moveTypes = [[2,-1],[2,1],[1,2],[-1,2],[-2,-1],[-2,1],[-1,-2],[1,-2]];
         moveTypes.forEach(m => {
-            let moveOpt = [row + m[0], col + m[1]];
+            // let moveOpt = [row + m[0], col + m[1]];
             if (isEmpty(row + m[0], col + m[1])) {
                 moves.push([row + m[0], col + m[1]]);
             }
@@ -357,6 +449,18 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             bishopMoves[1].push(c);
         })
         return [bishopMoves[0], bishopMoves[1]];
+    }
+
+    function getKingMoveCaps(row, col, piece) {
+        let moves = [];
+        let caps = [];
+        const moveTypes = [[-1,-1],[0,-1],[1,-1],[-1,1],[0,1],[1,1],[-1,0],[1,0]];
+        moveTypes.forEach( m => {
+            if (isEmpty(row + m[0], col + m[1]) && isSafe(row + m[0], col + m[1], piece)) {
+                moves.push([row + m[0], col + m[1]]);
+            }
+        });
+        return [moves, caps];
     }
 
     return (
