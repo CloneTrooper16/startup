@@ -124,6 +124,22 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             nextSquares[row - 1][col] = "";
         }
 
+        //castling
+        if (piece.type == "k" && col == piece.pos[1] + 2) {
+            const backRow = piece.color == "w" ? 7 : 0;
+            const rook = deepCopy(nextSquares[backRow][7]);
+            nextSquares[backRow][7] = "";
+            rook.pos = [backRow,5];
+            nextSquares[backRow][5] = rook;
+        }
+        else if (piece.type == "k" && col == piece.pos[1] - 2) {
+            const backRow = piece.color == "w" ? 7 : 0;
+            const rook = deepCopy(nextSquares[backRow][0]);
+            nextSquares[backRow][0] = "";
+            rook.pos = [backRow,3];
+            nextSquares[backRow][3] = rook;
+        }
+
         const newPos = [row, col];
         piece.pos = newPos;
         nextSquares[row][col] = piece;
@@ -734,7 +750,45 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             //     moves.push([row + m[0], col + m[1]]);
             // }
         });
+        if (!piece.hasMoved) {
+            if (checkKingSideCastle(piece, checkSquares)) {
+                moves.push([row, col + 2]);
+            }
+            if (checkQueenSideCastle(piece, checkSquares)) {
+                moves.push([row, col - 2]);
+            }
+        }
         return [moves, caps];
+    }
+
+    function checkKingSideCastle(piece, checkSquares) {
+        const backRow = piece.color == "w" ? 7 : 0;
+        if ((piece.color == "w" && !isWhiteCheck.check) || (piece.color == "b" && !isBlackCheck.check)) {
+            if (checkSquares[backRow][5] == "" && checkSquares[backRow][6] == "") {
+                const rookSpot = checkSquares[backRow][7];
+                if (rookSpot != "" && !rookSpot.hasMoved) {
+                    if (isSafe(backRow, 5, piece, checkSquares) && isSafe(backRow, 6, piece, checkSquares)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    function checkQueenSideCastle(piece, checkSquares) {
+        const backRow = piece.color == "w" ? 7 : 0;
+        if ((piece.color == "w" && !isWhiteCheck.check) || (piece.color == "b" && !isBlackCheck.check)) {
+            if (checkSquares[backRow][1] == "" && checkSquares[backRow][2] == "" && checkSquares[backRow][3] == "") {
+                const rookSpot = checkSquares[backRow][0];
+                if (rookSpot != "" && !rookSpot.hasMoved) {
+                    if (isSafe(backRow, 2, piece, checkSquares) && isSafe(backRow, 3, piece, checkSquares)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     function getChecks(rowCol, piece, checkSquares) {
