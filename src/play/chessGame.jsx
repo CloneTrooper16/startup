@@ -26,7 +26,7 @@ export function ChessGame(props) {
     }
 
     //add sound here?
-
+    //initialize board
     React.useState(() => {
         setHistory(
                 [[[

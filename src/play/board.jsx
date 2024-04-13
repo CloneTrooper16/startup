@@ -13,12 +13,13 @@ function Square({ lightDark, value, onSquareClick, status }) {
     );
 }
 
-export function Board({ whiteIsNext, squares, onPlay }) {
+export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     const [selectedSquare, setSelectedSquare] = React.useState();
     const [moveOpts, setMoveOpts] = React.useState();
     const [capOpts, setCapOpts] = React.useState();
     const [movedLast, setMovedLast] = React.useState(0);
-    const [isCheck, setCheck] = React.useState(false);
+    const [isWhiteCheck, setWhiteCheck] = React.useState(false);
+    const [isBlackCheck, setBlackCheck] = React.useState(false);
 
     function handleClick(row, col) {
         if (isMoveOrCapOpt([row, col])) {
@@ -48,8 +49,23 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     }
 
     React.useEffect(() => {
-        const check = checkCheck(whiteIsNext);
-        setCheck(check);
+        const check = checkCheck();
+        if (check) {
+            if (whiteIsNext) {
+                setBlackCheck(check);
+            } else {
+                setWhiteCheck(check);
+            }
+            console.log(check);
+        }
+    }, [movedLast]);
+
+    React.useEffect(() => {
+        // const stillCheck = checkCheck();
+        // if (stillCheck.length) {
+        //     console.log("still check");
+        //     undo();
+        // }
     }, [movedLast]);
 
     React.useEffect(() => {
@@ -84,6 +100,7 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         const nextSquares = squares.slice();
         nextSquares[piece.pos[0]][piece.pos[1]] = "";
 
+        //en pessant
         if (piece.type == "p" && piece.color == "w" && squares[row][col] == "" && col != piece.pos[1]) {
             nextSquares[row + 1][col] = "";
         }
@@ -100,6 +117,10 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         setMovedLast(piece);
         onPlay(nextSquares);
     }
+    
+    // function undo() {
+    //     goBack();
+    // }
 
     function isMoveOrCapOpt(move) {
         return isMoveOpt(move) || isCapOpt(move);
@@ -138,7 +159,7 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     }
 
     function inCheck(move) {
-        if (areArraysEqual(move, isCheck)) {
+        if (areArraysEqual(move, isWhiteCheck) || areArraysEqual(move, isBlackCheck)) {
             return true;
         }
         return false;
@@ -181,6 +202,10 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         } else {
             return !checkWhiteAttacks(row, col);
         }
+    }
+
+    function stopsCheck() {
+
     }
 
     function checkBlackAttacks(row, col) {
@@ -241,7 +266,7 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         return result;
     }
 
-    function checkCheck(whiteIsNext) {
+    function checkCheck() {
         let result = [];
         if (!whiteIsNext) {
             //see if black is now in check
