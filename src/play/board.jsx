@@ -277,8 +277,8 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         //TODO: i belive this needs to work with hypoSquares?
         let result = false;
         let movCaps = [];
-        if (piece != undefined && piece.type != "p") {
-            movCaps = getMoves(rowCol, piece, checkSquares);
+        if (piece != undefined && (piece.type != "p")) {
+            movCaps = getChecks(rowCol, piece, checkSquares);
         }
         else if (piece != undefined && piece.type == "p") {
             movCaps[0] = getPawnChecks(rowCol[0], rowCol[1], piece);
@@ -506,17 +506,25 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         let moves = [];
         let caps = [];
         const moveTypes = [[2,-1],[2,1],[1,2],[-1,2],[-2,-1],[-2,1],[-1,-2],[1,-2]];
-        moveTypes.forEach(m => {
-            // let moveOpt = [row + m[0], col + m[1]];
-            if (isEmpty(row + m[0], col + m[1], checkSquares)) {
-                moves.push([row + m[0], col + m[1]]);
-            }
-            else {
-                if (isOpponent(row + m[0], col + m[1], piece.color, checkSquares)) {
-                    caps.push([row + m[0], col + m[1]]);
+        if (!opensCheck(row, col, piece)) {
+            moveTypes.forEach(m => {
+                // let moveOpt = [row + m[0], col + m[1]];
+                if (isEmpty(row + m[0], col + m[1], checkSquares)) {
+                    if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + m[0], col + m[1], piece))
+                                                                     || (isBlackCheck.check && stopsCheck(row + m[0], col + m[1], piece))) {
+                            moves.push([row + m[0], col + m[1]]);
+                    }
                 }
-            }
-        });
+                else {
+                    if (isOpponent(row + m[0], col + m[1], piece.color, checkSquares)) {
+                        if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + m[0], col + m[1], piece))
+                                                                         || (isBlackCheck.check && stopsCheck(row + m[0], col + m[1], piece))) {
+                            caps.push([row + m[0], col + m[1]]);
+                        }
+                    }
+                }
+            });
+        }
         return [moves, caps];
     }
 
@@ -580,6 +588,156 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     }
 
     function getKingMoveCaps(row, col, piece, checkSquares) {
+        let moves = [];
+        let caps = [];
+        const moveTypes = [[-1,-1],[0,-1],[1,-1],[-1,1],[0,1],[1,1],[-1,0],[1,0]];
+        moveTypes.forEach( m => {
+            if (isEmpty(row + m[0], col + m[1], checkSquares) && isSafe(row + m[0], col + m[1], piece, squares)) {
+                moves.push([row + m[0], col + m[1]]);
+            }
+        });
+        return [moves, caps];
+    }
+
+    function getChecks(rowCol, piece, checkSquares) {
+        const row = rowCol[0];
+        const col = rowCol[1];
+        let result = [];
+        if (piece.type == "r") {
+            result = getRookChecks(row, col, piece, checkSquares);
+        }
+        else if (piece.type == "n") {
+            result = getKnightChecks(row, col, piece, checkSquares);
+        }
+        else if (piece.type == "b") {
+            result = getBishopChecks(row, col, piece, checkSquares);
+        }
+        else if (piece.type == "q") {
+            result = getQueenChecks(row, col, piece, checkSquares);
+        }
+        else if (piece.type == "k") {
+            result = getKingChecks(row, col, piece, checkSquares);
+        }
+        return result;
+    }
+
+    function getRookChecks(row, col, piece, checkSquares) {
+        let moves = [];
+        let caps = [];
+        let i = 1;
+        while (isEmpty(row + i, col, checkSquares)) {
+            moves.push([row + i, col]);
+            i++;
+        }
+        if (isOpponent(row + i, col, piece.color, checkSquares)) {
+            caps.push([row + i, col]);
+        }
+        i = -1;
+        while (isEmpty(row + i, col, checkSquares)) {
+            moves.push([row + i, col]);
+            i--;
+        }
+        if (isOpponent(row + i, col, piece.color, checkSquares)) {
+            caps.push([row + i, col]);
+        }
+        i = 1;
+        while (isEmpty(row, col + i, checkSquares)) {
+            moves.push([row, col + i]);
+            i++;
+        }
+        if (isOpponent(row, col + i, piece.color, checkSquares)) {
+            caps.push([row, col + i]);
+        }
+        i = -1;
+        while (isEmpty(row, col + i, checkSquares)) {
+            moves.push([row, col + i]);
+            i--;
+        }
+        if (isOpponent(row, col + i, piece.color, checkSquares)) {
+            caps.push([row, col + i]);
+        }
+
+        return [moves, caps];
+    }
+
+    function getKnightChecks(row, col, piece, checkSquares) {
+        let moves = [];
+        let caps = [];
+        const moveTypes = [[2,-1],[2,1],[1,2],[-1,2],[-2,-1],[-2,1],[-1,-2],[1,-2]];
+        moveTypes.forEach(m => {
+            // let moveOpt = [row + m[0], col + m[1]];
+            if (isEmpty(row + m[0], col + m[1], checkSquares)) {
+                moves.push([row + m[0], col + m[1]]);
+            }
+            else {
+                if (isOpponent(row + m[0], col + m[1], piece.color, checkSquares)) {
+                    caps.push([row + m[0], col + m[1]]);
+                }
+            }
+        });
+        return [moves, caps];
+    }
+    
+    function getBishopChecks(row, col, piece, checkSquares) {
+        let moves = [];
+        let caps = [];
+        let i = 1;
+        let j = 1;
+        while (isEmpty(row + i, col + j, checkSquares)) {
+            moves.push([row + i, col + j]);
+            i++;
+            j++;
+        }
+        if (isOpponent(row + i, col + j, piece.color, checkSquares)) {
+            caps.push([row + i, col + j]);
+        }
+        i = -1;
+        j = 1;
+        while (isEmpty(row + i, col + j, checkSquares)) {
+            moves.push([row + i, col + j]);
+            i--;
+            j++;
+        }
+        if (isOpponent(row + i, col + j, piece.color, checkSquares)) {
+            caps.push([row + i, col + j]);
+        }
+        i = -1;
+        j = -1;
+        while (isEmpty(row + i, col + j, checkSquares)) {
+            moves.push([row + i, col + j]);
+            i--;
+            j--;
+        }
+        if (isOpponent(row + i, col + j, piece.color, checkSquares)) {
+            caps.push([row + i, col + j]);
+        }
+        i = 1;
+        j = -1;
+        while (isEmpty(row + i, col + j, checkSquares)) {
+            moves.push([row + i, col + j]);
+            i++;
+            j--;
+        }
+        if (isOpponent(row + i, col + j, piece.color, checkSquares)) {
+            caps.push([row + i, col + j]);
+        }
+
+        return [moves, caps];
+    }
+
+    function getQueenChecks(row, col, piece, checkSquares) {
+        let rookMoves = getRookChecks(row, col, piece, checkSquares);
+        let bishopMoves = getBishopChecks(row, col, piece, checkSquares);
+        rookMoves[0].forEach( m => {
+            bishopMoves[0].push(m);
+        });
+        rookMoves[1].forEach( c => {
+            bishopMoves[1].push(c);
+        })
+        return [bishopMoves[0], bishopMoves[1]];
+    }
+
+    function getKingChecks(row, col, piece, checkSquares) {
         let moves = [];
         let caps = [];
         const moveTypes = [[-1,-1],[0,-1],[1,-1],[-1,1],[0,1],[1,1],[-1,0],[1,0]];
