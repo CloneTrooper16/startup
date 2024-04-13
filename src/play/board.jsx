@@ -19,6 +19,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     const [movedLast, setMovedLast] = React.useState(0);
     const [isWhiteCheck, setWhiteCheck] = React.useState({check: false, pos: []});
     const [isBlackCheck, setBlackCheck] = React.useState({check: false, pos: []});
+    const [winner, setWinner] = React.useState(false);
 
     function handleClick(row, col) {
         if (isMoveOrCapOpt([row, col])) {
@@ -48,6 +49,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     }
 
     React.useEffect(() => {
+        //check for check
         const check = checkCheck(squares);
         if (check) {
             if (!whiteIsNext) {
@@ -58,14 +60,30 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
                 setBlackCheck({check: false, pos: []});
             }
         }
+        //check for mate
+        if (getAllMoves(whiteIsNext ? "w" : "b").length == 0, squares) {
+            if (isWhiteCheck.check) {
+                console.log("white wins!");
+                setWinner("White");
+            }
+            else if (isBlackCheck.check) {
+                console.log("black wins!");
+                setWinner("Black"); 
+            }
+            else {
+                console.log("Stale mate!");
+                setWinner("None");
+            }
+
+        }
     }, [movedLast]);
 
-    React.useEffect(() => {
-        // const stillCheck = checkCheck();
-        // if (stillCheck.length) {
-        //     undo();
-        // }
-    }, [movedLast]);
+    // React.useEffect(() => {
+    //     // const stillCheck = checkCheck();
+    //     // if (stillCheck.length) {
+    //     //     undo();
+    //     // }
+    // }, [movedLast]);
 
     React.useEffect(() => {
         if (selectedSquare) {
@@ -292,6 +310,18 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
                 }
             });
         })
+        return result;
+    }
+
+    function getAllMoves(color, checkSquares) {
+        let result = [];
+        checkSquares.forEach( r => {
+            r.forEach( square => {
+                if (square != "" && square.color == color) {
+                    result.push(getMoves(square.pos, square, checkSquares));
+                }
+            });
+        });
         return result;
     }
 
