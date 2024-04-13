@@ -12,7 +12,7 @@ function Square({ lightDark, value, onSquareClick, status }) {
     );
 }
 
-export function Board({ whiteIsNext, squares, onPlay, goBack }) {
+export function Board({ whiteIsNext, squares, onPlay }) {
     const [selectedSquare, setSelectedSquare] = React.useState();
     const [moveOpts, setMoveOpts] = React.useState();
     const [capOpts, setCapOpts] = React.useState();
@@ -62,21 +62,20 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         }
         //check for mate
         if (getAllMoves(whiteIsNext ? "w" : "b", squares).length == 0) {
-            if (isWhiteCheck.check) {
-                console.log("white wins!");
-                setWinner("White");
-            }
-            else if (isBlackCheck.check) {
-                console.log("black wins!");
-                setWinner("Black"); 
-            }
-            else {
+            if (check) {
+                if (!whiteIsNext) {
+                    console.log("white wins!");
+                    setWinner("White");
+                } else {
+                    console.log("black wins!");
+                    setWinner("Black"); 
+                }
+            } else {
                 console.log("Stale mate!");
                 setWinner("None");
             }
-
         }
-    }, [movedLast]);
+    }, [squares]);
 
     // React.useEffect(() => {
     //     // const stillCheck = checkCheck();
@@ -315,13 +314,20 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
 
     function getAllMoves(color, checkSquares) {
         let result = [];
+        console.log("getting all", color == "w" ? "white" : "black", "moves");
         checkSquares.forEach( r => {
             r.forEach( square => {
                 if (square != "" && square.color == color) {
-                    result.push(getMoves(square.pos, square, checkSquares));
+                    let moves = getMoves(square.pos, square, checkSquares);
+                    moves.forEach( type => {
+                        type.forEach( m => {
+                            result.push(m);
+                        });
+                    });
                 }
             });
         });
+        console.log(result.length);
         return result;
     }
 
@@ -505,7 +511,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         let caps = [];
         let i = 1;
         while (isEmpty(row + i, col, checkSquares)) {
-            if (checkLogic(row + i, col, checkSquares)) {
+            if (checkLogic(row + i, col, piece)) {
                 if (!opensCheck(row + i, col, piece)) {
                     moves.push([row + i, col]);
                 }
