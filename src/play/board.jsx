@@ -133,6 +133,8 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             //change to function for more options
         }
 
+        piece.hasMoved = true;
+
         setSelectedSquare(null);
         setMoveOpts(null);
         setCapOpts(null);

@@ -30,48 +30,48 @@ export function ChessGame(props) {
     React.useState(() => {
         setHistory(
                 [[[
-                    {color: "b", type: "r", pos: [0,0]}, 
-                    {color: "b", type: "n", pos: [0,1]}, 
-                    {color: "b", type: "b", pos: [0,2]}, 
-                    {color: "b", type: "q", pos: [0,3]}, 
-                    {color: "b", type: "k", pos: [0,4]}, 
-                    {color: "b", type: "b", pos: [0,5]}, 
-                    {color: "b", type: "n", pos: [0,6]}, 
-                    {color: "b", type: "r", pos: [0,7]}
+                    {color: "b", type: "r", pos: [0,0], hasMoved: false}, 
+                    {color: "b", type: "n", pos: [0,1], hasMoved: false}, 
+                    {color: "b", type: "b", pos: [0,2], hasMoved: false}, 
+                    {color: "b", type: "q", pos: [0,3], hasMoved: false}, 
+                    {color: "b", type: "k", pos: [0,4], hasMoved: false}, 
+                    {color: "b", type: "b", pos: [0,5], hasMoved: false}, 
+                    {color: "b", type: "n", pos: [0,6], hasMoved: false}, 
+                    {color: "b", type: "r", pos: [0,7], hasMoved: false}
                 ],
                 [
-                    {color: "b", type: "p", pos:[1,0]},
-                    {color: "b", type: "p", pos:[1,1]},
-                    {color: "b", type: "p", pos:[1,2]},
-                    {color: "b", type: "p", pos:[1,3]},
-                    {color: "b", type: "p", pos:[1,4]},
-                    {color: "b", type: "p", pos:[1,5]},
-                    {color: "b", type: "p", pos:[1,6]},
-                    {color: "b", type: "p", pos:[1,7]}
+                    {color: "b", type: "p", pos:[1,0], hasMoved: false},
+                    {color: "b", type: "p", pos:[1,1], hasMoved: false},
+                    {color: "b", type: "p", pos:[1,2], hasMoved: false},
+                    {color: "b", type: "p", pos:[1,3], hasMoved: false},
+                    {color: "b", type: "p", pos:[1,4], hasMoved: false},
+                    {color: "b", type: "p", pos:[1,5], hasMoved: false},
+                    {color: "b", type: "p", pos:[1,6], hasMoved: false},
+                    {color: "b", type: "p", pos:[1,7], hasMoved: false}
                 ],
                 ["", "", "", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", ""],
                 ["", "", "", "", "", "", "", ""],
                 [
-                    {color: "w", type: "p", pos:[6,0]},
-                    {color: "w", type: "p", pos:[6,1]},
-                    {color: "w", type: "p", pos:[6,2]},
-                    {color: "w", type: "p", pos:[6,3]},
-                    {color: "w", type: "p", pos:[6,4]},
-                    {color: "w", type: "p", pos:[6,5]},
-                    {color: "w", type: "p", pos:[6,6]},
-                    {color: "w", type: "p", pos:[6,7]}
+                    {color: "w", type: "p", pos:[6,0], hasMoved: false},
+                    {color: "w", type: "p", pos:[6,1], hasMoved: false},
+                    {color: "w", type: "p", pos:[6,2], hasMoved: false},
+                    {color: "w", type: "p", pos:[6,3], hasMoved: false},
+                    {color: "w", type: "p", pos:[6,4], hasMoved: false},
+                    {color: "w", type: "p", pos:[6,5], hasMoved: false},
+                    {color: "w", type: "p", pos:[6,6], hasMoved: false},
+                    {color: "w", type: "p", pos:[6,7], hasMoved: false}
                 ],
                 [
-                    {color: "w", type: "r", pos: [7,0]}, 
-                    {color: "w", type: "n", pos: [7,1]},
-                    {color: "w", type: "b", pos: [7,2]}, 
-                    {color: "w", type: "q", pos: [7,3]}, 
-                    {color: "w", type: "k", pos: [7,4]}, 
-                    {color: "w", type: "b", pos: [7,5]}, 
-                    {color: "w", type: "n", pos: [7,6]}, 
-                    {color: "w", type: "r", pos: [7,7]}
+                    {color: "w", type: "r", pos: [7,0], hasMoved: false}, 
+                    {color: "w", type: "n", pos: [7,1], hasMoved: false},
+                    {color: "w", type: "b", pos: [7,2], hasMoved: false}, 
+                    {color: "w", type: "q", pos: [7,3], hasMoved: false}, 
+                    {color: "w", type: "k", pos: [7,4], hasMoved: false}, 
+                    {color: "w", type: "b", pos: [7,5], hasMoved: false}, 
+                    {color: "w", type: "n", pos: [7,6], hasMoved: false}, 
+                    {color: "w", type: "r", pos: [7,7], hasMoved: false}
                 ]]]);
     }, []);
 
