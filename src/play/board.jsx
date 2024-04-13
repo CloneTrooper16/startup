@@ -49,7 +49,6 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
 
     React.useEffect(() => {
         const check = checkCheck(squares);
-        // console.log("c:", check)
         if (check) {
             if (!whiteIsNext) {
                 setBlackCheck(check);
@@ -58,14 +57,12 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
                 setWhiteCheck(check);
                 setBlackCheck({check: false, pos: []});
             }
-            // console.log(check);
         }
     }, [movedLast]);
 
     React.useEffect(() => {
         // const stillCheck = checkCheck();
         // if (stillCheck.length) {
-        //     console.log("still check");
         //     undo();
         // }
     }, [movedLast]);
@@ -177,14 +174,15 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
     }
 
     function deepCopy(array) {
-        let copy = [];
-        for (let item of array) {
-            if (Array.isArray(item)) {
-                // If item is an array, recursively copy it
-                copy.push(deepCopy(item));
+        let copy = Array.isArray(array) ? [] : {};
+
+        for (let key in array) {
+            if (typeof array[key] === 'object' && array[key] !== null) {
+            // Recursively copy nested objects or arrays
+            copy[key] = deepCopy(array[key]);
             } else {
-                // If item is primitive, just copy it
-                copy.push(item);
+            // Copy primitive values
+            copy[key] = array[key];
             }
         }
         return copy;
@@ -224,8 +222,9 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         const hypoSquares = deepCopy(squares);
         hypoSquares[piece.pos[0]][piece.pos[1]] = "";
         const newPos = [row, col];
-        hypoSquares[row][col] = piece;
-        // console.log("chekingTests",checkCheck(hypoSquares));
+        let hypoPiece = deepCopy(piece);
+        hypoPiece.pos = newPos;
+        hypoSquares[row][col] = hypoPiece;
         let result = checkCheck(hypoSquares);
         return !result.check;
     }
@@ -236,8 +235,10 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         }
         const hypoSquares = deepCopy(squares);
         hypoSquares[piece.pos[0]][piece.pos[1]] = "";
-        // const newPos = [row, col];
-        hypoSquares[row][col] = piece;
+        const newPos = [row, col];
+        let hypoPiece = deepCopy(piece);
+        hypoPiece.pos = newPos;
+        hypoSquares[row][col] = hypoPiece;
         let result = checkCheck(hypoSquares);
         return result.check;
     }
@@ -282,10 +283,12 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         }
         else if (piece != undefined && piece.type == "p") {
             movCaps[0] = getPawnChecks(rowCol[0], rowCol[1], piece);
+            // console.log(movCaps);
         }
         if (movCaps.length) {
             movCaps[0].forEach( m => {
                 if (areArraysEqual(m, attackSquare)) {
+                    // console.log(attackSquare, piece);
                     result = true;
                     return true;
                 }
@@ -337,6 +340,7 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
                 return;
             }
         });
+        console.log(result.pos, color);
         return result;
     }
     
@@ -678,9 +682,26 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         let caps = [];
         const moveTypes = [[-1,-1],[0,-1],[1,-1],[-1,1],[0,1],[1,1],[-1,0],[1,0]];
         moveTypes.forEach( m => {
-            if (isEmpty(row + m[0], col + m[1], checkSquares) && isSafe(row + m[0], col + m[1], piece, squares)) {
-                moves.push([row + m[0], col + m[1]]);
+            if (isEmpty(row + m[0], col + m[1], checkSquares)) {
+                if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + m[0], col + m[1], piece))
+                                                                 || (isBlackCheck.check && stopsCheck(row + m[1], col + m[1], piece))) {
+                    if (!opensCheck(row + m[0], col + m[1], piece)) {
+                        moves.push([row + m[0], col + m[1]]);
+                    }
+                }
+            } else {
+                if (isOpponent(row + m[0], col + m[1], piece.color, checkSquares)) {
+                    if ((!isWhiteCheck.check && !isBlackCheck.check) || (isWhiteCheck.check && stopsCheck(row + m[0], col + m[1], piece))
+                                                                     || (isBlackCheck.check && stopsCheck(row + m[0], col + m[1], piece))) {
+                        if (!opensCheck(row + m[0], col + m[1], piece)) {
+                            caps.push([row + m[0], col + m[1]]);
+                        }
+                    }
+                }
             }
+            // if (isEmpty(row + m[0], col + m[1], checkSquares) && isSafe(row + m[0], col + m[1], piece, squares)) {
+            //     moves.push([row + m[0], col + m[1]]);
+            // }
         });
         return [moves, caps];
     }
@@ -827,9 +848,14 @@ export function Board({ whiteIsNext, squares, onPlay, goBack }) {
         let moves = [];
         let caps = [];
         const moveTypes = [[-1,-1],[0,-1],[1,-1],[-1,1],[0,1],[1,1],[-1,0],[1,0]];
-        moveTypes.forEach( m => {
-            if (isEmpty(row + m[0], col + m[1], checkSquares) && isSafe(row + m[0], col + m[1], piece, squares)) {
+        moveTypes.forEach(m => {
+            if (isEmpty(row + m[0], col + m[1], checkSquares)) {
                 moves.push([row + m[0], col + m[1]]);
+            }
+            else {
+                if (isOpponent(row + m[0], col + m[1], piece.color, checkSquares)) {
+                    caps.push([row + m[0], col + m[1]]);
+                }
             }
         });
         return [moves, caps];
