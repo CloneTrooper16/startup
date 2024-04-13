@@ -165,6 +165,9 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             result[0] = getPawnMoves(row, col, piece);
             result[1] = getPawnCaps(row, col, piece);
         }
+        else if (piece.type == "n") {
+            result = getKnightMoveCaps(row, col, piece);
+        }
         return result;
     }
     
@@ -229,6 +232,28 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             }
         }
         return result;
+    }
+
+    function getRookMoveCaps(row, col, piece) {
+
+    }
+
+    function getKnightMoveCaps(row, col, piece) {
+        let moves = [];
+        let caps = [];
+        const moveTypes = [[2,-1],[2,1],[1,2],[-1,2],[-2,-1],[-2,1],[-1,-2],[1,-2]];
+        moveTypes.forEach(m => {
+            let moveOpt = [row + m[0], col + m[1]];
+            if (isEmpty(row + m[0], col + m[1])) {
+                moves.push([row + m[0], col + m[1]]);
+            }
+            else {
+                if (isOpponent(row + m[0], col + m[1], piece.color)) {
+                    caps.push([row + m[0], col + m[1]]);
+                }
+            }
+        });
+        return [moves, caps];
     }
 
     return (

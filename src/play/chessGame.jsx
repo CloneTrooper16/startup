@@ -30,14 +30,14 @@ export function ChessGame(props) {
     React.useState(() => {
         setHistory(
                 [[[
-                    "", 
+                    {color: "b", type: "r", pos: [0,0]}, 
                     {color: "b", type: "n", pos: [0,1]}, 
                     "", 
                     "", 
                     "", 
                     "", 
                     {color: "b", type: "n", pos: [0,6]}, 
-                    ""
+                    {color: "b", type: "r", pos: [0,7]}
                 ],
                 [
                     {color: "b", type: "p", pos:[1,0]},
@@ -64,14 +64,14 @@ export function ChessGame(props) {
                     {color: "w", type: "p", pos:[6,7]}
                 ],
                 [
-                    "", 
-                    {color: "w", type: "n"},
-                    "", 
-                    "", 
+                    {color: "w", type: "r", pos: [7,0]}, 
+                    {color: "w", type: "n", pos: [7,1]},
                     "", 
                     "", 
-                    {color: "w", type: "n"}, 
-                    ""
+                    "", 
+                    "", 
+                    {color: "w", type: "n", pos: [7,6]}, 
+                    {color: "w", type: "r", pos: [7,0]}
                 ]]]);
     }, []);
 
