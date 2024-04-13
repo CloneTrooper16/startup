@@ -3,6 +3,7 @@ const GameEvent = {
     End: 'gameEnd',
     Start: 'gameStart',
     historyUpdate: 'historyUpdate',
+    colorPick: "colorPick"
   };
   
   class EventMessage {

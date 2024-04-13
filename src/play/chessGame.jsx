@@ -2,6 +2,7 @@ import React from 'react';
 import { Board } from './board';
 import { GameEvent, GameNotifier } from './gameNotifier';
 import { PlayerName} from './playerName';
+import Button from 'react-bootstrap/Button';
 
 import './chessGame.css';
 
@@ -11,6 +12,10 @@ export function ChessGame(props) {
     const currentSquares = history[currentMove];
     const whiteIsNext = currentMove % 2 === 0;
     const userName = props.userName;
+    const [playerColor, setPlayerColor] = React.useState();
+    const [oppColor, setOppColor] = React.useState();
+    const [oppName, setOppName] = React.useState("Unknown Advesary");
+    
 
     const [events, setEvent] = React.useState([]);
 
@@ -82,6 +87,9 @@ export function ChessGame(props) {
             if (event.type == GameEvent.historyUpdate) {
                 setHistory(event.value);
                 setCurrentMove(event.value.length - 1);
+            } else if (event.type == GameEvent.colorPick) {
+                setOppName(event.from);
+                setOppColor(event.value == "white" ? "white" : "black");
             }
         }
     }, [events]);
@@ -93,11 +101,35 @@ export function ChessGame(props) {
         setCurrentMove(nextHistory.length - 1);
     }
 
-    return (
-        <div className='playArea'>
-            <PlayerName userName={"Test"} userIcon={"Test"}/>
-            <Board whiteIsNext={whiteIsNext} squares={currentSquares} onPlay={handlePlay} />
-            <PlayerName userName={"Help"} userIcon={"Help"}/>
-        </div>
-    );
+    function pickColor(color) {
+        setPlayerColor(color);
+        GameNotifier.broadcastEvent(userName, GameEvent.colorPick, color);
+    }
+
+    if (playerColor == null) {
+        return (
+            <div className='playArea'>
+                <PlayerName userName={"Black"} userIcon={"Gray"}/>
+                <Button variant="primary" className="colorPicker" onClick={() => pickColor("black")}>
+                    Play Black
+                </Button>
+                <PlayerName userName={"White"} userIcon={"Black"}/>
+                <Button variant="primary" className="colorPicker" onClick={() => pickColor("white")}>
+                    Play White
+                </Button>
+            </div>
+        );
+    } else {
+        return (
+            <div className='playArea'>
+                <PlayerName userName={playerColor == "black" ? userName : oppName} 
+                    userIcon={playerColor == "black" ? userName : oppName}
+                />
+                <Board whiteIsNext={whiteIsNext} squares={currentSquares} onPlay={handlePlay} />
+                <PlayerName userName={playerColor == "white" ? userName : oppName} 
+                    userIcon={playerColor == "white" ? userName : oppName}
+                />
+            </div>
+        );
+    }
 }
