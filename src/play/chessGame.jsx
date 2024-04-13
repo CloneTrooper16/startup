@@ -10,6 +10,22 @@ export function ChessGame(props) {
     const currentSquares = history[currentMove];
     const whiteIsNext = currentMove % 2 === 0;
     const userName = props.userName;
+
+    const [events, setEvent] = React.useState([]);
+
+    React.useEffect(() => {
+      GameNotifier.addHandler(handleGameEvent);
+  
+      return () => {
+        GameNotifier.removeHandler(handleGameEvent);
+      };
+    });
+  
+    function handleGameEvent(event) {
+      setEvent([...events, event]);
+      console.log(events.length);
+    }
+
     //add sound here?
 
     React.useState(() => {
@@ -60,9 +76,19 @@ export function ChessGame(props) {
                 ]]]);
     }, []);
 
+    React.useEffect(() => {
+        // console.log("event received, updating...");
+        for (const [i, event] of events.entries()) { 
+            if (event.type == GameEvent.historyUpdate) {
+                setHistory(event.value);
+                setCurrentMove(event.value.length - 1);
+            }
+        }
+    }, [events]);
+
     function handlePlay(nextSquares) {
         const nextHistory = [...history.slice(0, currentMove + 1), nextSquares];
-        GameNotifier.broadcastEvent(userName, GameEvent.historyUpdate, { msg: "test"});
+        GameNotifier.broadcastEvent(userName, GameEvent.historyUpdate, nextHistory);
         setHistory(nextHistory);
         setCurrentMove(nextHistory.length - 1);
     }
