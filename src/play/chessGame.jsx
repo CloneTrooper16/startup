@@ -32,10 +32,10 @@ export function ChessGame(props) {
                 [[[
                     {color: "b", type: "r", pos: [0,0]}, 
                     {color: "b", type: "n", pos: [0,1]}, 
-                    "", 
-                    "", 
-                    "", 
-                    "", 
+                    {color: "b", type: "b", pos: [0,2]}, 
+                    {color: "b", type: "q", pos: [0,3]}, 
+                    {color: "b", type: "k", pos: [0,4]}, 
+                    {color: "b", type: "b", pos: [0,5]}, 
                     {color: "b", type: "n", pos: [0,6]}, 
                     {color: "b", type: "r", pos: [0,7]}
                 ],
@@ -66,10 +66,10 @@ export function ChessGame(props) {
                 [
                     {color: "w", type: "r", pos: [7,0]}, 
                     {color: "w", type: "n", pos: [7,1]},
-                    "", 
-                    "", 
-                    "", 
-                    "", 
+                    {color: "w", type: "b", pos: [7,2]}, 
+                    {color: "w", type: "q", pos: [7,3]}, 
+                    {color: "w", type: "k", pos: [7,4]}, 
+                    {color: "w", type: "b", pos: [7,5]}, 
                     {color: "w", type: "n", pos: [7,6]}, 
                     {color: "w", type: "r", pos: [7,7]}
                 ]]]);

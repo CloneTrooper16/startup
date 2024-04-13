@@ -171,6 +171,12 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         else if (piece.type == "n") {
             result = getKnightMoveCaps(row, col, piece);
         }
+        else if (piece.type == "b") {
+            result = getBishopMoveCaps(row, col, piece);
+        }
+        else if (piece.type == "q") {
+            result = getQueenMoveCaps(row, col, piece);
+        }
         return result;
     }
     
@@ -292,6 +298,65 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             }
         });
         return [moves, caps];
+    }
+
+    function getBishopMoveCaps(row, col, piece) {
+        let moves = [];
+        let caps = [];
+        let i = 1;
+        let j = 1;
+        while (isEmpty(row + i, col + j)) {
+            moves.push([row + i, col + j]);
+            i++;
+            j++;
+        }
+        if (isOpponent(row + i, col + j, piece.color)) {
+            caps.push([row + i, col + j]);
+        }
+        i = -1;
+        j = 1;
+        while (isEmpty(row + i, col + j)) {
+            moves.push([row + i, col + j]);
+            i--;
+            j++;
+        }
+        if (isOpponent(row + i, col + j, piece.color)) {
+            caps.push([row + i, col + j]);
+        }
+        i = -1;
+        j = -1;
+        while (isEmpty(row + i, col + j)) {
+            moves.push([row + i, col + j]);
+            i--;
+            j--;
+        }
+        if (isOpponent(row + i, col + j, piece.color)) {
+            caps.push([row + i, col + j]);
+        }
+        i = 1;
+        j = -1;
+        while (isEmpty(row + i, col + j)) {
+            moves.push([row + i, col + j]);
+            i++;
+            j--;
+        }
+        if (isOpponent(row + i, col + j, piece.color)) {
+            caps.push([row + i, col + j]);
+        }
+
+        return [moves, caps];
+    }
+
+    function getQueenMoveCaps(row, col, piece) {
+        let rookMoves = getRookMoveCaps(row, col, piece);
+        let bishopMoves = getBishopMoveCaps(row, col, piece);
+        rookMoves[0].forEach( m => {
+            bishopMoves[0].push(m);
+        });
+        rookMoves[1].forEach( c => {
+            bishopMoves[1].push(c);
+        })
+        return [bishopMoves[0], bishopMoves[1]];
     }
 
     return (
