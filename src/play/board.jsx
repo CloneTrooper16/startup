@@ -43,7 +43,9 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     React.useEffect(() => {
         if (selectedSquare) {
             // Calculate moveOpts/capOpts here
-            setMoveOpts(getMoves(selectedSquare, getSelectedPiece()));
+            let opts = getMoves(selectedSquare, getSelectedPiece());
+            setMoveOpts(opts[0]);
+            setCapOpts(opts[1]);
         }
     }, [selectedSquare]);
 
@@ -77,39 +79,29 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     }
 
     function isMoveOrCapOpt(move) {
-        let result = false;
-        if (moveOpts || capOpts) {
-            if (moveOpts) {
-                moveOpts.forEach( opt => {
-                    if (areArraysEqual(opt, move)) {
-                        result = true;
-                    }
-                });
-                if (result == true) {
-                    return true;
-                } 
-            }
-            else {
-                if (capOpts) {
-                    capOpts.forEach( opt => {
-                        if (areArraysEqual(opt, move)) {
-                            result = true;
-                        }
-                    });
-                }
-            }
-            if (result == true) {
-                return true;
-            } 
-            return false;
-        }
-        return false;
+        return isMoveOpt(move) || isCapOpt(move);
     }
 
     function isMoveOpt(move) {
         if (moveOpts) {
             let result = false;
             moveOpts.forEach( opt => {
+                if (areArraysEqual(opt, move)) {
+                    result = true;
+                }
+            });
+            if (result == true) {
+                return true;
+            }
+            return false;
+        }
+        return false;
+    }
+
+    function isCapOpt(move) {
+        if (capOpts) {
+            let result = false;
+            capOpts.forEach( opt => {
                 if (areArraysEqual(opt, move)) {
                     result = true;
                 }
@@ -132,8 +124,21 @@ export function Board({ whiteIsNext, squares, onPlay }) {
     }
 
     function isEmpty(row, col) {
-        if (squares[row][col] == "") {
-            return true;
+        if (row < 8 && row > 0 && col < 8 && col > 0) {
+            if (squares[row][col] == "") {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function isOpponent(row, col, myColor) {
+        if (row < 8 && row > 0 && col < 8 && col > 0) {
+            if (squares[row][col] != "") {
+                if (squares[row][col].color != myColor) {
+                    return true;
+                }
+            }
         }
         return false;
     }
@@ -143,7 +148,8 @@ export function Board({ whiteIsNext, squares, onPlay }) {
         const col = rowCol[1];
         let result = [];
         if (piece.type == "p") {
-            result = getPawnMoves(row, col, piece);
+            result[0] = getPawnMoves(row, col, piece);
+            result[1] = getPawnCaps(row, col, piece);
         }
         return result;
     }
@@ -164,6 +170,32 @@ export function Board({ whiteIsNext, squares, onPlay }) {
                 if (row == 1 && isEmpty(row + 2, col)) {
                     result.push([row + 2, col]);
                 }
+            }
+        }
+        return result;
+    }
+
+    function getPawnCaps(row, col, piece) {
+        let result = [];
+        if (piece.color == "w") {
+            if (isOpponent(row - 1, col - 1, piece.color)) {
+                result.push([row - 1, col -1]);
+            }
+            if (isOpponent(row - 1, col + 1, piece.color)) {
+                result.push([row - 1, col + 1]);
+            }
+            if (row == 3) {
+                //implement en pessant
+            }
+        } else {
+            if (isOpponent(row + 1, col - 1, piece.color)) {
+                result.push([row + 1, col -1]);
+            }
+            if (isOpponent(row + 1, col + 1, piece.color)) {
+                result.push([row + 1, col + 1]);
+            }
+            if (row == 4) {
+                //implement en pessant
             }
         }
         return result;
