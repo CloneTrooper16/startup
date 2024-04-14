@@ -12,7 +12,7 @@ function Square({ lightDark, value, onSquareClick, status }) {
     );
 }
 
-export function Board({ whiteIsNext, squares, pColor, onPlay, onWin }) {
+export function Board({ whiteIsNext, squares, pColor, onPlay, onWin, setRandomMoves }) {
     const [selectedSquare, setSelectedSquare] = React.useState();
     const [moveOpts, setMoveOpts] = React.useState();
     const [capOpts, setCapOpts] = React.useState();
@@ -20,6 +20,7 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin }) {
     const [isWhiteCheck, setWhiteCheck] = React.useState({check: false, pos: []});
     const [isBlackCheck, setBlackCheck] = React.useState({check: false, pos: []});
     const [winner, setWinner] = React.useState(false);
+    const [availableMoves, setAvailableMoves] = React.useState();
 
     function handleClick(row, col) {
         if (isMoveOrCapOpt([row, col])) {
@@ -82,7 +83,15 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin }) {
                 onWin("none");
             }
         }
+        // get random moves
+        setAvailableMoves(getRandomMoves(3, whiteIsNext ? "w" : "b", squares));
     }, [squares]);
+
+    React.useEffect(() => {
+        if (availableMoves && availableMoves.length > 0) {
+            setRandomMoves(availableMoves);
+        }
+    }, [availableMoves])
 
     React.useEffect(() => {
         if (selectedSquare) {
@@ -336,7 +345,21 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin }) {
         return result;
     }
 
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]]; // Swap elements
+        }
+        return array;
+      }
+
     //TODO: use this to get a list of all moves, and then pick three
+    function getRandomMoves(num, color, checkSquares) {
+        let allMoves = getAllMoves(color, checkSquares);
+        allMoves = shuffleArray(allMoves);
+        return allMoves.slice(0,num);
+    }
+
     function getAllMoves(color, checkSquares) {
         let result = [];
         checkSquares.forEach( r => {
@@ -345,7 +368,7 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin }) {
                     let moves = getMoves(square.pos, square, checkSquares);
                     moves.forEach( type => {
                         type.forEach( m => {
-                            result.push(m);
+                            result.push({move: m, piece: square});
                         });
                     });
                 }

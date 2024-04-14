@@ -3,4 +3,16 @@
     width: 10vh !important;
     background-color: rgb(70, 108, 161) !important;
     margin-top: 1vh;
+    display: flex;
+    align-items: center;
+}
+
+.moveNote  {
+    color: white;
+    padding-top: 1vh;
+    font-size: large;
+}
+
+.cardPiece {
+    width: 10vh;
 }

@@ -16,6 +16,7 @@ export function ChessGame(props) {
     const [playerColor, setPlayerColor] = React.useState();
     const [oppColor, setOppColor] = React.useState();
     const [oppName, setOppName] = React.useState("UnknownAdversary");
+    const [cardMoves, setCardMoves] = React.useState([]);
     
 
     const [events, setEvent] = React.useState([]);
@@ -111,8 +112,11 @@ export function ChessGame(props) {
         }
     }
 
-    function handleMoveCards() {
-        
+    function handleMoveCards(moves) {
+        moves.forEach( m => {
+            console.log(m);
+        });
+        setCardMoves(moves);
     }
 
     function pickColor(color) {
@@ -176,9 +180,9 @@ export function ChessGame(props) {
                     />
                 </div>
                 <div className="moveCards">
-                    <Card></Card>
-                    <Card></Card>
-                    <Card></Card>
+                {cardMoves.map((move, index) => (
+                    <Card key={index} move={move} />
+                ))}
                 </div>
             </>
         );
