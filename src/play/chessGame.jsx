@@ -14,7 +14,7 @@ export function ChessGame(props) {
     const userName = props.userName;
     const [playerColor, setPlayerColor] = React.useState();
     const [oppColor, setOppColor] = React.useState();
-    const [oppName, setOppName] = React.useState("Unknown Advesary");
+    const [oppName, setOppName] = React.useState("UnknownAdversary");
     
 
     const [events, setEvent] = React.useState([]);
