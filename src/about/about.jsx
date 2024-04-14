@@ -26,7 +26,7 @@ export function About(props) {
             <div id="picture" className="pictureBox"><img src="assets/coolBanner.jpeg" /></div>
             <h1>About RandomChess</h1>
             <p>RandomChess is basically the best game where you can either win or almost win!</p>
-            <p>The goal of the game is to get a pawn to the back row before your opponent can</p>
+            <p>The goal of the game is to use the random moves given to you to checkmate your opponent</p>
             <p>Chess piece assets are owned by Chess.com and are used for educational purposes</p>
             <div id="quote" className="quote-box"></div>
         </main>
