@@ -12,7 +12,7 @@ function Square({ lightDark, value, onSquareClick, status }) {
     );
 }
 
-export function Board({ whiteIsNext, squares, onPlay }) {
+export function Board({ whiteIsNext, squares, pColor, onPlay, onWin }) {
     const [selectedSquare, setSelectedSquare] = React.useState();
     const [moveOpts, setMoveOpts] = React.useState();
     const [capOpts, setCapOpts] = React.useState();
@@ -31,10 +31,14 @@ export function Board({ whiteIsNext, squares, onPlay }) {
             // }
             const nextSquares = squares.slice();
             if (whiteIsNext && squares[row][col].color == "w") {
-                setSelectedSquare([row,col]);
+                if (pColor == "w") {
+                    setSelectedSquare([row,col]);
+                }
             }
             else if (!whiteIsNext && squares[row][col].color == "b") {
-                setSelectedSquare([row,col]);
+                if (pColor == "b") {
+                    setSelectedSquare([row,col]);
+                }
             }
             else {
                 setSelectedSquare(null);
@@ -66,13 +70,16 @@ export function Board({ whiteIsNext, squares, onPlay }) {
                 if (!whiteIsNext) {
                     console.log("white wins!");
                     setWinner("White");
+                    onWin("white");
                 } else {
                     console.log("black wins!");
                     setWinner("Black"); 
+                    onWin("black");
                 }
             } else {
                 console.log("Stale mate!");
                 setWinner("None");
+                onWin("none");
             }
         }
     }, [squares]);
