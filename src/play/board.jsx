@@ -12,7 +12,7 @@ function Square({ lightDark, value, onSquareClick, status }) {
     );
 }
 
-export function Board({ whiteIsNext, squares, pColor, onPlay, onWin, setRandomMoves }) {
+export function Board({ whiteIsNext, squares, pColor, selectedMove, onPlay, onWin, setRandomMoves }) {
     const [selectedSquare, setSelectedSquare] = React.useState();
     const [moveOpts, setMoveOpts] = React.useState();
     const [capOpts, setCapOpts] = React.useState();
@@ -33,12 +33,12 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin, setRandomMo
             const nextSquares = squares.slice();
             if (whiteIsNext && squares[row][col].color == "w") {
                 if (pColor == "w") {
-                    setSelectedSquare([row,col]);
+                    // setSelectedSquare([row,col]);
                 }
             }
             else if (!whiteIsNext && squares[row][col].color == "b") {
                 if (pColor == "b") {
-                    setSelectedSquare([row,col]);
+                    // setSelectedSquare([row,col]);
                 }
             }
             else {
@@ -52,6 +52,14 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin, setRandomMo
             setCapOpts(null);
         }
     }
+
+    React.useEffect(() => {
+        if (selectedMove != null) {
+            // console.log("SM:", selectedMove);
+            setMoveOpts([selectedMove.move]);
+            setSelectedSquare(selectedMove.piece.pos);
+        }
+    }, [selectedMove]) 
 
     React.useEffect(() => {
         //check for check
@@ -96,9 +104,9 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin, setRandomMo
     React.useEffect(() => {
         if (selectedSquare) {
             // Calculate moveOpts/capOpts here
-            let opts = getMoves(selectedSquare, getSelectedPiece(), squares);
-            setMoveOpts(opts[0]);
-            setCapOpts(opts[1]);
+            // let opts = getMoves(selectedSquare, getSelectedPiece(), squares);
+            // setMoveOpts(opts[0]);
+            // setCapOpts(opts[1]);
         }
     }, [selectedSquare]);
 

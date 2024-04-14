@@ -16,3 +16,7 @@
 .cardPiece {
     width: 10vh;
 }
+
+.selectedCard {
+    background-color: rgb(76, 201, 124) !important;
+}

@@ -17,6 +17,8 @@ export function ChessGame(props) {
     const [oppColor, setOppColor] = React.useState();
     const [oppName, setOppName] = React.useState("UnknownAdversary");
     const [cardMoves, setCardMoves] = React.useState([]);
+    const [cardListClasses, setCardListClasses] = React.useState(Array(cardMoves.length).fill(''));
+    const [selectedMove, setSelectedMove] = React.useState();
     
 
     const [events, setEvent] = React.useState([]);
@@ -112,17 +114,36 @@ export function ChessGame(props) {
         }
     }
 
+    React.useEffect(() => {
+        // console.log(selectedMove);
+    }, [selectedMove])
+    
+
     function handleMoveCards(moves) {
         moves.forEach( m => {
-            console.log(m);
+            // console.log(m);
+            m.className = "";
         });
         setCardMoves(moves);
+    }
+
+    // React.useEffect(() => {
+    //     // console.log("cardListClasses changed:", cardListClasses);
+    // }, [cardListClasses]);
+
+    function handleCardClick(index) {
+        // console.log(index);
+        setSelectedMove(cardMoves[index]);
+        // const newClasses = Array(cardMoves.length).fill(''); // Reset all classes
+        // newClasses[index] = 'selectedCard'; // Set the clicked card's class
+        // setCardListClasses(newClasses);
     }
 
     function pickColor(color) {
         setPlayerColor(color);
         GameNotifier.broadcastEvent(userName, GameEvent.colorPick, color);
     }
+    
 
     async function saveScore(score) {
         // console.log(score);
@@ -174,14 +195,19 @@ export function ChessGame(props) {
                     <PlayerName userName={playerColor == "black" ? userName : oppName} 
                         userIcon={playerColor == "black" ? userName : oppName}
                     />
-                    <Board whiteIsNext={whiteIsNext} squares={currentSquares} pColor={playerColor[0]} onPlay={handlePlay} onWin={handleWin} setRandomMoves={handleMoveCards}/>
+                    <Board whiteIsNext={whiteIsNext} squares={currentSquares} pColor={playerColor[0]} selectedMove={selectedMove} onPlay={handlePlay} onWin={handleWin} setRandomMoves={handleMoveCards}/>
                     <PlayerName userName={playerColor == "white" ? userName : oppName} 
                         userIcon={playerColor == "white" ? userName : oppName}
                     />
                 </div>
                 <div className="moveCards">
                 {cardMoves.map((move, index) => (
-                    <Card key={index} move={move} />
+                    <Card
+                        key={index}
+                        move={move}
+                        className={cardListClasses[index]} // Pass the className here
+                        onCardClick={() => handleCardClick(index)}
+                    />
                 ))}
                 </div>
             </>
