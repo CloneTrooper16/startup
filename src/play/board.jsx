@@ -336,9 +336,9 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin }) {
         return result;
     }
 
+    //TODO: use this to get a list of all moves, and then pick three
     function getAllMoves(color, checkSquares) {
         let result = [];
-        console.log("getting all", color == "w" ? "white" : "black", "moves");
         checkSquares.forEach( r => {
             r.forEach( square => {
                 if (square != "" && square.color == color) {
@@ -351,7 +351,6 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin }) {
                 }
             });
         });
-        console.log(result.length);
         return result;
     }
 
@@ -947,22 +946,24 @@ export function Board({ whiteIsNext, squares, pColor, onPlay, onWin }) {
     }
 
     return (
-        <div className="chessBoard">
-            {/* <div className="status">{status}</div> */}
-            {squares.map((row, rowIndex) => (
-                <div className="row" key={rowIndex}>
-                {row.map((square, colIndex) => (
-                    <Square
-                        key={colIndex}
-                        lightDark={(rowIndex + colIndex) % 2 === 0 ? "lghtSquare" : "darkSquare"}
-                        value={square}
-                        onSquareClick={() => handleClick(rowIndex, colIndex)}
-                        status={getStatus(rowIndex, colIndex)}
-                    />
+        <>
+            <div className="chessBoard">
+                {/* <div className="status">{status}</div> */}
+                {squares.map((row, rowIndex) => (
+                    <div className="row" key={rowIndex}>
+                    {row.map((square, colIndex) => (
+                        <Square
+                            key={colIndex}
+                            lightDark={(rowIndex + colIndex) % 2 === 0 ? "lghtSquare" : "darkSquare"}
+                            value={square}
+                            onSquareClick={() => handleClick(rowIndex, colIndex)}
+                            status={getStatus(rowIndex, colIndex)}
+                        />
+                    ))}
+                    </div>
                 ))}
-                </div>
-            ))}
-        </div>
+            </div>
+        </>
     );
 }
 

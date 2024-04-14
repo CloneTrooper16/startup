@@ -1,0 +1,6 @@
+.card {
+    height: 15vh !important;
+    width: 10vh !important;
+    background-color: rgb(70, 108, 161) !important;
+    margin-top: 1vh;
+}

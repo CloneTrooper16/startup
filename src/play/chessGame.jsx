@@ -1,7 +1,8 @@
 import React from 'react';
 import { Board } from './board';
 import { GameEvent, GameNotifier } from './gameNotifier';
-import { PlayerName} from './playerName';
+import { PlayerName } from './playerName';
+import { Card } from './card';
 import Button from 'react-bootstrap/Button';
 
 import './chessGame.css';
@@ -110,6 +111,10 @@ export function ChessGame(props) {
         }
     }
 
+    function handleMoveCards() {
+        
+    }
+
     function pickColor(color) {
         setPlayerColor(color);
         GameNotifier.broadcastEvent(userName, GameEvent.colorPick, color);
@@ -160,15 +165,22 @@ export function ChessGame(props) {
         );
     } else {
         return (
-            <div className='playArea'>
-                <PlayerName userName={playerColor == "black" ? userName : oppName} 
-                    userIcon={playerColor == "black" ? userName : oppName}
-                />
-                <Board whiteIsNext={whiteIsNext} squares={currentSquares} pColor={playerColor[0]} onPlay={handlePlay} onWin={handleWin} />
-                <PlayerName userName={playerColor == "white" ? userName : oppName} 
-                    userIcon={playerColor == "white" ? userName : oppName}
-                />
-            </div>
+            <>
+                <div className='playArea'>
+                    <PlayerName userName={playerColor == "black" ? userName : oppName} 
+                        userIcon={playerColor == "black" ? userName : oppName}
+                    />
+                    <Board whiteIsNext={whiteIsNext} squares={currentSquares} pColor={playerColor[0]} onPlay={handlePlay} onWin={handleWin} setRandomMoves={handleMoveCards}/>
+                    <PlayerName userName={playerColor == "white" ? userName : oppName} 
+                        userIcon={playerColor == "white" ? userName : oppName}
+                    />
+                </div>
+                <div className="moveCards">
+                    <Card></Card>
+                    <Card></Card>
+                    <Card></Card>
+                </div>
+            </>
         );
     }
 }
